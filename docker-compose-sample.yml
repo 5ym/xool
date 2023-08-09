@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  tweel:
+    build:
+      dockerfile_inline: |
+        FROM node:lts-slim
+        RUN npm i -g npm && npm i -g bun
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    user: root
+    command: bun run dev
+    expose:
+      - 3000
+    networks:
+      - docker_default
+      - default
+    environment:
+      - HOST=tweel.localhost
+      - CLIENT_ID=
+      - CLIENT_SECRET=
+      - HASH=
+    labels:
+      - "traefik.http.routers.tweel.rule=Host(`tweel.localhost`)"
+      - "traefik.http.routers.tweel.tls=true"
+  db:
+    image: mongo:5
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=toor
+      - MONGO_INITDB_DATABASE=tweel
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data/db
+    labels:
+      - "traefik.enable=false"
+
+volumes:
+  mongo:
+
+networks:
+  docker_default:
+    external: true
+    name: docker_default
