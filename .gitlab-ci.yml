@@ -1,4 +1,4 @@
-docker-build-master:
+docker-build:
   # Official docker image.
   image: docker:latest
   stage: build
@@ -10,7 +10,7 @@ docker-build-master:
     - docker build -t "$CI_REGISTRY_IMAGE/app" .
     - docker push "$CI_REGISTRY_IMAGE/app"
   only:
-    - master
+    - main
 
 update-production:
   image: curlimages/curl
@@ -18,4 +18,4 @@ update-production:
   script:
     - curl -X POST $PORTAINER
   only:
-    - master
+    - main
