@@ -1,4 +1,5 @@
 import mongo from "./db"
+import User from "./userModel"
 
 export async function client(method: string, url: string, body: string|null, bearer: string = '') {
     let headers: Record<string, string>
@@ -40,7 +41,7 @@ export async function refreshToken(refreshToken: string) {
 }
 
 export async function autoAction(type: string, key: string, text: string = '') {
-    const collection = (await mongo()).collection('user')
+    const collection = (await mongo()).collection<User>('user')
     const existUser = await collection.findOne({key: key})
     if (existUser === null)
         return {error: 'keyが無効です再ログインしてください'}

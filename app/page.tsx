@@ -1,8 +1,8 @@
 import { autoAction } from '@/utils/client';
-import hljs from 'highlight.js'
 import { cookies } from 'next/headers'
 import { Suspense } from 'react';
 import 'highlight.js/styles/github-dark.css';
+import CodeBlock from '@/utils/codeBlock';
 
 export default function Home() {
   const cookieStore = cookies()
@@ -56,15 +56,5 @@ async function KeyInfo(props: { wkey: string }) {
       </>
     }
   </>)
-}
-
-function CodeBlock(props: { code: string, language: string }) {
-  // コードから自動的に言語を識別してハイライトする
-  const highlightedCode: string = hljs.highlight(props.code, {language: props.language}).value
-  return (
-      <pre className='mb-4 bg-gray-800 text-white'>
-          <code dangerouslySetInnerHTML={{ __html: highlightedCode }} />
-      </pre>
-  )
 }
 

@@ -2,6 +2,7 @@ import { client, getMe } from '@/utils/client'
 import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
 import mongo from '@/utils/db'
+import User from '@/utils/userModel'
  
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
@@ -24,7 +25,7 @@ export async function GET(request: Request) {
         res.cookies.set('message', 'API利用上限に達しましたしばらく経ってから再試行してください')
         return res
     }
-    const collection = (await mongo()).collection('user')
+    const collection = (await mongo()).collection<User>('user')
     const existUser = await collection.findOne({socialId: user.data.id})
     if (existUser !== null) {
         await collection.updateOne(
@@ -51,7 +52,7 @@ export async function GET(request: Request) {
 
 async function generateKey() {
     const key = crypto.randomUUID()
-    const collection = (await mongo()).collection('user')
+    const collection = (await mongo()).collection<User>('user')
     const existUser = await collection.findOne({'key': key})
     if (existUser !== null)
         generateKey()
