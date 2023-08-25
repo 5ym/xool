@@ -4,7 +4,7 @@ services:
     build:
       dockerfile_inline: |
         FROM node:lts-slim
-        RUN npm i -g npm && npm i -g bun
+        RUN npm i -g bun
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app
