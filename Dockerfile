@@ -5,7 +5,7 @@ ENV NODE_ENV production
 FROM base as builder
 RUN npm i -g bun
 COPY package.json bun.lockb ./
-RUN bun i
+RUN bun i --frozen-lockfile
 COPY . .
 RUN bun run build
 
