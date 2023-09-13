@@ -120,28 +120,30 @@ async function KeyInfo(props: { wkey: string }) {
               </span>
             </div>
           ) : (
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-4">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    ID
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Name
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Username
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td className="px-6 py-4">{ret?.data.id}</td>
-                  <td className="px-6 py-4">{ret?.data.name}</td>
-                  <td className="px-6 py-4">{ret?.data.username}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-4">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      ID
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Name
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Username
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td className="px-6 py-4">{ret?.data.id}</td>
+                    <td className="px-6 py-4">{ret?.data.name}</td>
+                    <td className="px-6 py-4">{ret?.data.username}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           )}
           <h3 className="mb-1 text-2xl font-bold dark:text-white">
             別のアカウントを使用する場合は
