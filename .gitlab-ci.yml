@@ -1,11 +1,12 @@
-docker-build:
-  # Official docker image.
+default:
   image: docker:latest
-  stage: build
   services:
     - docker:dind
+
+docker-build:
+  stage: build
   before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - echo $CI_REGISTRY_PASSWORD | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
   script:
     - docker build -t "$CI_REGISTRY_IMAGE/app" .
     - docker push "$CI_REGISTRY_IMAGE/app"
@@ -18,4 +19,14 @@ update-production:
   script:
     - curl -X POST $PORTAINER
   only:
+    - main
+
+docker-build:
+  stage: build
+  before_script:
+    - echo $CI_REGISTRY_PASSWORD | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
+  script:
+    - docker build -t "$CI_REGISTRY_IMAGE/app:$CI_COMMIT_BRANCH" .
+    - docker push "$CI_REGISTRY_IMAGE/app:$CI_COMMIT_BRANCH"
+  except:
     - main
