@@ -1,16 +1,10 @@
 services:
   tweel:
     build:
-      dockerfile_inline: |
-        FROM node:lts-slim
-        RUN npm i -g bun
-    working_dir: /usr/src/app
+      target: base
     volumes:
       - .:/usr/src/app
-    user: root
-    command: bun run dev
-    expose:
-      - 3000
+    command: dev
     networks:
       - docker_default
       - default

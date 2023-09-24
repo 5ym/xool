@@ -1,18 +1,17 @@
-FROM node:lts-slim as base
+FROM oven/bun as base
 WORKDIR /usr/src/app
-ENV NODE_ENV production
+EXPOSE 3000
+ENTRYPOINT [ "bun" ]
+CMD [ "server.js" ]
 
 FROM base as builder
-RUN npm i -g bun
+ENV NODE_ENV production
 COPY package.json bun.lockb ./
 RUN bun i --frozen-lockfile
 COPY . .
 RUN bun run build
 
 FROM base
-USER node
-COPY --from=builder --chown=node:node /usr/src/app/.next/standalone .
-COPY --from=builder --chown=node:node /usr/src/app/.next/static .next/static
-EXPOSE 3000
-ENTRYPOINT [ "node" ]
-CMD [ "server.js" ]
+USER bun
+COPY --from=builder --chown=bun:bun /usr/src/app/.next/standalone .
+COPY --from=builder --chown=bun:bun /usr/src/app/.next/static .next/static
