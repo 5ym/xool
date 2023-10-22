@@ -3,7 +3,7 @@ default:
   services:
     - docker:dind
 
-docker-build:
+docker-production-build:
   stage: build
   before_script:
     - echo $CI_REGISTRY_PASSWORD | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
