@@ -1,7 +1,7 @@
 FROM oven/bun as base
 WORKDIR /usr/src/app
 EXPOSE 3000
-ENTRYPOINT [ "bun" ]
+ENTRYPOINT [ "node" ]
 CMD [ "server.js" ]
 
 FROM base as builder
