@@ -1,4 +1,4 @@
-import { autoAction } from '@/utils/client'
+import { autoAction } from '@/components/client'
 import { NextResponse } from 'next/server'
  
 export async function POST(req: Request) {

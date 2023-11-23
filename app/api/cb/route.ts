@@ -1,8 +1,8 @@
-import { client, getMe } from '@/utils/client'
+import { client, getMe } from '@/components/client'
 import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
-import mongo from '@/utils/db'
-import User from '@/utils/userModel'
+import mongo from '@/components/db'
+import User from '@/components/userModel'
  
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)

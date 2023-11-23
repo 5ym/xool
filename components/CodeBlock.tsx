@@ -5,7 +5,7 @@ export default function CodeBlock(props: { code: string; language: string }) {
     language: props.language,
   }).value;
   return (
-    <pre className="overflow-scroll p-1 mb-4 bg-gray-800 text-white">
+    <pre className="overflow-x-auto p-1 mb-4 bg-gray-800 text-white">
       <code dangerouslySetInnerHTML={{ __html: highlightedCode }} />
     </pre>
   );

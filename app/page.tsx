@@ -1,8 +1,8 @@
-import { autoAction } from "@/utils/client";
+import { autoAction } from "@/components/client";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
 import "highlight.js/styles/github-dark.css";
-import CodeBlock from "@/utils/codeBlock";
+import CodeBlock from "@/components/CodeBlock";
 
 export default function Home() {
   const cookieStore = cookies();
