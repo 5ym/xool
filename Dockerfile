@@ -9,8 +9,8 @@ RUN bun i --frozen-lockfile
 COPY . .
 RUN bun run build
 
-FROM node:lts-slim
-USER node
-COPY --from=builder --chown=node:node /usr/src/app/.next/standalone .
-COPY --from=builder --chown=node:node /usr/src/app/.next/static .next/static
+FROM base
+USER bun
+COPY --from=builder --chown=bun:bun /usr/src/app/.next/standalone .
+COPY --from=builder --chown=bun:bun /usr/src/app/.next/static .next/static
 CMD [ "server.js" ]
