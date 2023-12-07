@@ -3,7 +3,7 @@ WORKDIR /usr/src/app
 EXPOSE 3000
 
 FROM base as builder
-RUN apt-get update && apt-get intall -y git
+RUN apt-get update && apt-get install -y git
 ENV NODE_ENV production
 COPY package.json bun.lockb ./
 RUN bun i --frozen-lockfile
