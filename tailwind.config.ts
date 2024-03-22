@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-gothic)', 'BIZ UDPGothic'],
-        serif: ['var(--font-mincho)', 'BIZ UDPMincho'],
+        sans: ['BIZ UDPGothic', 'var(--font-gothic)'],
+        serif: ['BIZ UDPMincho', 'var(--font-mincho)'],
         mono: ['MesloLGS NF'],
       },
       backgroundImage: {
