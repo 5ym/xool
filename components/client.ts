@@ -28,8 +28,8 @@ export async function getMe(bearer: string) {
     return await client('GET', 'users/me', null, bearer)
 }
 
-export async function postTweet(bearer: string, payload: { text: string, media?: string }) {
-    return await client('POST', 'tweets', JSON.stringify({text: payload.text}), bearer)
+export async function postTweet(bearer: string, payload?: { text: string, media?: string }) {
+    return await client('POST', 'tweets', JSON.stringify({text: payload?.text}), bearer)
 }
 
 export async function refreshToken(refreshToken: string) {
@@ -40,7 +40,7 @@ export async function refreshToken(refreshToken: string) {
     return await client('POST', 'oauth2/token', params.toString())
 }
 
-export async function autoAction(type: string, key: string, payload: { text: string, media?: string }) {
+export async function autoAction(type: string, key: string, payload?: { text: string, media?: string }) {
     const collection = (await mongo()).collection<User>('user')
     const existUser = await collection.findOne({key: key})
     if (existUser === null)
@@ -63,7 +63,7 @@ export async function autoAction(type: string, key: string, payload: { text: str
     return await action(type, accessToken, payload)
 }
 
-async function action(type: string, accessToken: string, payload: { text: string, media?: string }) {
+async function action(type: string, accessToken: string, payload?: { text: string, media?: string }) {
     let ret
     switch(type) {
         case 'me':
