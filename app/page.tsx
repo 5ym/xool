@@ -69,7 +69,7 @@ export default function Home() {
         <a
           className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
           target="_blank"
-          href="https://twitter.com/5yuim"
+          href="https://x.com/5yuim"
         >
           @5yuim
         </a>
@@ -150,7 +150,7 @@ async function KeyInfo(props: { wkey: string }) {
             <a
               className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
               target="_blank"
-              href="https://twitter.com"
+              href="https://x.com"
             >
               twitter
             </a>
