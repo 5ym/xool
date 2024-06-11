@@ -1,5 +1,5 @@
 services:
-  tweel:
+  xool:
     build:
       target: base
     volumes:
@@ -9,19 +9,19 @@ services:
       - docker_default
       - default
     environment:
-      - HOST=tweel.localhost
+      - HOST=x.localhost
       - CLIENT_ID=
       - CLIENT_SECRET=
       - HASH=
     labels:
-      - "traefik.http.routers.tweel.rule=Host(`tweel.localhost`)"
-      - "traefik.http.routers.tweel.tls=true"
+      - "traefik.http.routers.xool.rule=Host(`x.localhost`)"
+      - "traefik.http.routers.xool.tls=true"
   db:
     image: mongo:6
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=toor
-      - MONGO_INITDB_DATABASE=tweel
+      - MONGO_INITDB_DATABASE=xool
     ports:
       - 27017:27017
     volumes:

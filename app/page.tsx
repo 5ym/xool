@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <main className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
       <h2 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-        Tweel Webhook
+        Xool Webhook
       </h2>
       <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
         Webhookでポストをできるようにします

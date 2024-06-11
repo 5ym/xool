@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { BIZ_UDPGothic, BIZ_UDPMincho } from "next/font/google";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "Tweel",
+  title: "𝕏ool",
   description: "Tool for 𝕏",
 };
 const gothic = BIZ_UDPGothic({
