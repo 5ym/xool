@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BIZ_UDPGothic, BIZ_UDPMincho } from "next/font/google";
 import "./globals.css";
+import Nav from "@/components/Nav";
 export const metadata: Metadata = {
   title: "𝕏ool",
   description: "Tool for 𝕏",
@@ -26,7 +27,10 @@ export default function RootLayout({
       lang="ja"
       className={`${gothic.variable} ${mincho.variable} dark:bg-gray-900`}
     >
-      <body>{children}</body>
+      <body>
+        <Nav />
+        {children}
+      </body>
     </html>
   );
 }
