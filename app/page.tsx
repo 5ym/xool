@@ -3,16 +3,14 @@ import { cookies } from "next/headers";
 import { Suspense } from "react";
 import "highlight.js/styles/github-dark.css";
 import CodeBlock from "@/components/CodeBlock";
+import Link from "next/link";
 
-export default function Home() {
+export default function Page() {
   const cookieStore = cookies();
   const wkey = cookieStore.get("key")?.value;
   const message = cookieStore.get("message")?.value;
   return (
-    <main className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-      <h2 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-        𝕏ool Webhook
-      </h2>
+    <>
       <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
         Webhookでポストをできるようにします
       </p>
@@ -36,14 +34,14 @@ export default function Home() {
           </Suspense>
         )
       )}
-      <a
+      <Link
         href="/api/oauth"
         className="text-white bg-black hover:bg-[#222]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center dark:focus:ring-[#1da1f2]/55 mb-6 inline-block"
       >
         <span>Sign in with</span>
         <span className="text-2xl ml-2 leading-6 align-bottom">𝕏</span>
-      </a>
-      <h3 className="text-4xl font-extrabold dark:text-white">プライバシー</h3>
+      </Link>
+      <h3 className="text-3xl font-extrabold dark:text-white">プライバシー</h3>
       <p className="mb-3 text-gray-500 dark:text-gray-400">
         Webhookを作成するにあたってUser ID, Access Token, Refresh
         Tokenのみをサーバに保存しております。
@@ -68,7 +66,7 @@ export default function Home() {
       >
         ソースコード
       </a>
-    </main>
+    </>
   );
 }
 
