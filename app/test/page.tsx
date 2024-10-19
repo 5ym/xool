@@ -11,7 +11,7 @@ export default async function Page() {
 	return (
 		<div className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
 			<CodeBlock
-				code={`{ accsesToken: { ${existUser?.accessToken} } }`}
+				code={`{ "accsesToken": { "${existUser?.accessToken}" } }`}
 				lang="json"
 			/>
 		</div>
