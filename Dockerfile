@@ -1,8 +1,8 @@
-FROM oven/bun as base
+FROM oven/bun AS base
 WORKDIR /usr/src/app
 EXPOSE 3000
 
-FROM base as builder
+FROM base AS builder
 ENV NODE_ENV production
 COPY package.json bun.lockb ./
 RUN bun i --frozen-lockfile

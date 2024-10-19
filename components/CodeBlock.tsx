@@ -1,12 +1,22 @@
-import hljs from "highlight.js";
+import { toJsxRuntime } from "hast-util-to-jsx-runtime";
+import { Fragment } from "react";
+import { jsx, jsxs } from "react/jsx-runtime";
+import { type BundledLanguage, codeToHast, codeToHtml } from "shiki";
 
-export default function CodeBlock(props: { code: string; language: string }) {
-  const highlightedCode: string = hljs.highlight(props.code, {
-    language: props.language,
-  }).value;
-  return (
-    <pre className="overflow-x-auto p-1 mb-4 bg-gray-800 text-white">
-      <code dangerouslySetInnerHTML={{ __html: highlightedCode }} />
-    </pre>
-  );
+export default async function CodeBlock({
+	code,
+	lang,
+}: {
+	code: string;
+	lang: BundledLanguage;
+}) {
+	const out = await codeToHast(code, { lang, theme: "vitesse-dark" });
+	return toJsxRuntime(out, {
+		Fragment,
+		jsx,
+		jsxs,
+		components: {
+			pre: (props) => <pre {...props} className={`${props.className} p-2`} />,
+		},
+	});
 }
