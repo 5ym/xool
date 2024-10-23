@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default function Page() {
-	const cookieStore = cookies();
+export default async function Page() {
+	const cookieStore = await cookies();
 	const wkey = cookieStore.get("key")?.value;
 	const message = cookieStore.get("message")?.value;
 	return (

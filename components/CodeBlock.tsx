@@ -16,7 +16,9 @@ export default async function CodeBlock({
 		jsx,
 		jsxs,
 		components: {
-			pre: (props) => <pre {...props} className={`${props.className} p-2`} />,
+			pre: (props) => (
+				<pre {...props} className={`${props.className} p-2 overflow-auto`} />
+			),
 		},
 	});
 }

@@ -4,7 +4,7 @@ import mongo from "@/components/db";
 import { cookies } from "next/headers";
 
 export default async function Page() {
-	const cookieStore = cookies();
+	const cookieStore = await cookies();
 	const wkey = cookieStore.get("key")?.value;
 	const collection = (await mongo()).collection<User>("user");
 	const existUser = await collection.findOne({ key: wkey });
