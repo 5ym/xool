@@ -8,10 +8,15 @@ export default async function Page() {
 	const wkey = cookieStore.get("key")?.value;
 	const collection = (await mongo()).collection<User>("user");
 	const existUser = await collection.findOne({ key: wkey });
+	console.warn(existUser)
 	return (
-		<div className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
+		<div className="p-4 flex justify-center">
 			<CodeBlock
-				code={`{ "accsesToken": { "${existUser?.accessToken}" } }`}
+				code={
+`{
+	"accsesToken": "${existUser?.accessToken}",
+	"refreshToken": "${existUser?.refreshToken}"
+}`}
 				lang="json"
 			/>
 		</div>

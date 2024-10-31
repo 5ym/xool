@@ -6,7 +6,7 @@ import { type BundledLanguage, codeToHast } from "shiki";
 export default async function CodeBlock({
 	code,
 	lang,
-	className,
+	className = "",
 }: {
 	code: string;
 	lang: BundledLanguage;

@@ -9,79 +9,74 @@ export default async function Page() {
 	const wkey = cookieStore.get("key")?.value;
 	const message = cookieStore.get("message")?.value;
 	return (
-		<div className="container mx-auto px-4">
-				<p className="mb-6 text-lg font-normal lg:text-xl">
-					Webhookでポストをできるようにします
-				</p>
-				{message !== undefined ? (
-					<div role="alert" className="alert alert-error mb-4">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							className="h-6 w-6 shrink-0 stroke-current"
-							fill="none"
-							viewBox="0 0 24 24"
-						>
-							<title>Danger</title>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-						<span>{message}</span>
-					</div>
-				) : (
-					wkey !== undefined && (
-						<Suspense
-							fallback={
-								<>
-									<div className="skeleton h-8 w-full mb-1" />
-									<div className="skeleton h-28 w-full mb-4" />
-									<div className="skeleton h-8 w-full mb-1" />
-									<div className="skeleton h-20 w-full mb-4" />
-									<div className="skeleton h-8 w-full mb-1" />
-								</>
-							}
-						>
-							<KeyInfo wkey={wkey} />
-						</Suspense>
-					)
-				)}
-				<Link
-					href="/api/oauth"
-					className="text-white bg-black btn mb-4"
-				>
-					<span>Sign in with</span>
-					<span className="text-2xl">𝕏</span>
-				</Link>
-				<h3 className="text-3xl font-extrabold">プライバシー</h3>
-				<p className="mb-3">
-					Webhookを作成するにあたってUser ID, Access Token, Refresh
-					Tokenのみをサーバに保存しております。
-					<br />
-					そのほかのユーザー情報の取得は一切行っておりませんので、ご安心ください。
-				</p>
-				<p className="mb-3">
-					不具合などの報告は
-					<a
-						className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-						target="_blank"
-						href="https://x.com/5yuim"
-						rel="noreferrer"
+		<div className="mx-auto p-4 prose">
+			<p>Webhookで𝕏にポストをできるようにするウェブアプリケーションです</p>
+			{message !== undefined ? (
+				<div role="alert" className="alert alert-error">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						className="h-6 w-6 shrink-0 stroke-current"
+						fill="none"
+						viewBox="0 0 24 24"
 					>
-						@5yuim
-					</a>
-					へ
-				</p>
+						<title>Danger</title>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<span>{message}</span>
+				</div>
+			) : (
+				wkey !== undefined && (
+					<Suspense
+						fallback={
+							<>
+								<div className="skeleton h-8 w-full mt-8 mb-3" />
+								<div className="skeleton h-24 w-full mb-4" />
+								<div className="skeleton h-8 w-full mt-8 mb-3" />
+								<div className="skeleton h-24 w-full mt-7 mb-7" />
+								<div className="skeleton h-8 w-full mt-8 mb-3" />
+							</>
+						}
+					>
+						<KeyInfo wkey={wkey} />
+					</Suspense>
+				)
+			)}
+			<Link href="/api/oauth" className="text-white bg-black btn">
+				<span>Sign in with</span>
+				<span className="text-2xl">𝕏</span>
+			</Link>
+			<h3>プライバシー</h3>
+			<p>
+				Webhookを作成するにあたってUser ID, Access Token, Refresh
+				Tokenのみをサーバに保存しております。
+				<br />
+				そのほかのユーザー情報の取得は一切行っておりませんので、ご安心ください。
+			</p>
+			<p>
+				不具合などの報告は
 				<a
-					className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+					className="link link-primary"
 					target="_blank"
-					href="https://g.doany.io/5ym/tweel"
+					href="https://x.com/5yuim"
 					rel="noreferrer"
 				>
-					ソースコード
+					@5yuim
 				</a>
+				へ
+			</p>
+			<a
+				className="link link-primary"
+				target="_blank"
+				href="https://g.doany.io/5ym/tweel"
+				rel="noreferrer"
+			>
+				ソースコード
+			</a>
 		</div>
 	);
 }
@@ -92,7 +87,7 @@ async function KeyInfo(props: { wkey: string }) {
 	return (
 		<>
 			{keyError ? (
-				<div role="alert" className="alert alert-error mb-4">
+				<div role="alert" className="alert alert-error">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						className="h-6 w-6 shrink-0 stroke-current"
@@ -111,15 +106,14 @@ async function KeyInfo(props: { wkey: string }) {
 				</div>
 			) : (
 				<>
-					<h3 className="text-2xl font-bold mb-1">curlサンプル</h3>
+					<h3>curlサンプル</h3>
 					<CodeBlock
 						lang="sh"
-						className="mb-4"
 						code={`curl \\\n\t--location 'https://${process.env.HOST}/api/tweets' \\\n\t--header 'Content-Type: application/json' \\\n\t--data '{"key": "${props.wkey}","text": "example"}'`}
 					/>
-					<h3 className="text-2xl font-bold mb-1">現在のアカウント</h3>
+					<h3>現在のアカウント</h3>
 					{ret?.status === 429 ? (
-						<div role="alert" className="alert alert-warning mb-4">
+						<div role="alert" className="alert alert-warning">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								className="h-6 w-6 shrink-0 stroke-current"
@@ -137,8 +131,8 @@ async function KeyInfo(props: { wkey: string }) {
 							<span>ユーザー情報取得APIが上限に達しました</span>
 						</div>
 					) : (
-						<div className="overflow-x-auto mb-4">
-							<table className="table bg-primary-content">
+						<div className="overflow-x-auto">
+							<table className="table bg-primary-content my-0">
 								<thead>
 									<tr>
 										<th scope="col">ID</th>
@@ -156,10 +150,10 @@ async function KeyInfo(props: { wkey: string }) {
 							</table>
 						</div>
 					)}
-					<h3 className="mb-1 text-2xl font-bold">
+					<h3>
 						別のアカウントを使用する場合は
 						<a
-							className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+							className="link link-primary"
 							target="_blank"
 							href="https://x.com"
 							rel="noreferrer"
