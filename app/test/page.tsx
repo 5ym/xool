@@ -8,7 +8,6 @@ export default async function Page() {
 	const wkey = cookieStore.get("key")?.value;
 	const collection = (await mongo()).collection<User>("user");
 	const existUser = await collection.findOne({ key: wkey });
-	console.warn(existUser)
 	return (
 		<div className="p-4 flex justify-center">
 			<CodeBlock
