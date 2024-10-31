@@ -6,6 +6,13 @@ case "$1" in
     docker compose run --rm xool i
     docker compose up
     ;;
+  "b")
+    docker compose exec xool bash
+    ;;
+  "c")
+  docker compose exec xool bun run check
+  ;;
   *)
-    echo "i";;
+    echo "i b c"
+    ;;
 esac

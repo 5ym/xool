@@ -9,65 +9,80 @@ export default async function Page() {
 	const wkey = cookieStore.get("key")?.value;
 	const message = cookieStore.get("message")?.value;
 	return (
-		<>
-			<p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">
-				Webhookでポストをできるようにします
-			</p>
-			{message !== undefined ? (
-				<div
-					className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-					role="alert"
+		<div className="container mx-auto px-4">
+				<p className="mb-6 text-lg font-normal lg:text-xl">
+					Webhookでポストをできるようにします
+				</p>
+				{message !== undefined ? (
+					<div role="alert" className="alert alert-error mb-4">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-6 w-6 shrink-0 stroke-current"
+							fill="none"
+							viewBox="0 0 24 24"
+						>
+							<title>Danger</title>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						<span>{message}</span>
+					</div>
+				) : (
+					wkey !== undefined && (
+						<Suspense
+							fallback={
+								<>
+									<div className="skeleton h-8 w-full mb-1" />
+									<div className="skeleton h-28 w-full mb-4" />
+									<div className="skeleton h-8 w-full mb-1" />
+									<div className="skeleton h-20 w-full mb-4" />
+									<div className="skeleton h-8 w-full mb-1" />
+								</>
+							}
+						>
+							<KeyInfo wkey={wkey} />
+						</Suspense>
+					)
+				)}
+				<Link
+					href="/api/oauth"
+					className="text-white bg-black btn mb-4"
 				>
-					<span className="font-medium">{message}</span>
-				</div>
-			) : (
-				wkey !== undefined && (
-					<Suspense
-						fallback={
-							<div className="mb-4 px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
-								loading...
-							</div>
-						}
+					<span>Sign in with</span>
+					<span className="text-2xl">𝕏</span>
+				</Link>
+				<h3 className="text-3xl font-extrabold">プライバシー</h3>
+				<p className="mb-3">
+					Webhookを作成するにあたってUser ID, Access Token, Refresh
+					Tokenのみをサーバに保存しております。
+					<br />
+					そのほかのユーザー情報の取得は一切行っておりませんので、ご安心ください。
+				</p>
+				<p className="mb-3">
+					不具合などの報告は
+					<a
+						className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+						target="_blank"
+						href="https://x.com/5yuim"
+						rel="noreferrer"
 					>
-						<KeyInfo wkey={wkey} />
-					</Suspense>
-				)
-			)}
-			<Link
-				href="/api/oauth"
-				className="text-white bg-black hover:bg-[#222]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center dark:focus:ring-[#1da1f2]/55 mb-6 inline-block"
-			>
-				<span>Sign in with</span>
-				<span className="text-2xl ml-2 leading-6 align-bottom">𝕏</span>
-			</Link>
-			<h3 className="text-3xl font-extrabold dark:text-white">プライバシー</h3>
-			<p className="mb-3 text-gray-500 dark:text-gray-400">
-				Webhookを作成するにあたってUser ID, Access Token, Refresh
-				Tokenのみをサーバに保存しております。
-				<br />
-				そのほかのユーザー情報の取得は一切行っておりませんので、ご安心ください。
-			</p>
-			<p className="mb-3 text-gray-500 dark:text-gray-400">
-				不具合などの報告は
+						@5yuim
+					</a>
+					へ
+				</p>
 				<a
 					className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
 					target="_blank"
-					href="https://x.com/5yuim"
+					href="https://g.doany.io/5ym/tweel"
 					rel="noreferrer"
 				>
-					@5yuim
+					ソースコード
 				</a>
-				へ
-			</p>
-			<a
-				className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-				target="_blank"
-				href="https://g.doany.io/5ym/tweel"
-				rel="noreferrer"
-			>
-				ソースコード
-			</a>
-		</>
+		</div>
 	);
 }
 
@@ -77,60 +92,71 @@ async function KeyInfo(props: { wkey: string }) {
 	return (
 		<>
 			{keyError ? (
-				<div
-					className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-					role="alert"
-				>
-					<span className="font-medium">{keyError}</span>
+				<div role="alert" className="alert alert-error mb-4">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						className="h-6 w-6 shrink-0 stroke-current"
+						fill="none"
+						viewBox="0 0 24 24"
+					>
+						<title>Danger</title>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<span>{keyError}</span>
 				</div>
 			) : (
 				<>
-					<h3 className="text-2xl font-bold dark:text-white mb-1">
-						curlサンプル
-					</h3>
+					<h3 className="text-2xl font-bold mb-1">curlサンプル</h3>
 					<CodeBlock
 						lang="sh"
+						className="mb-4"
 						code={`curl \\\n\t--location 'https://${process.env.HOST}/api/tweets' \\\n\t--header 'Content-Type: application/json' \\\n\t--data '{"key": "${props.wkey}","text": "example"}'`}
 					/>
-					<h3 className="text-2xl font-bold dark:text-white mb-1">
-						現在のアカウント
-					</h3>
+					<h3 className="text-2xl font-bold mb-1">現在のアカウント</h3>
 					{ret?.status === 429 ? (
-						<div
-							className="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
-							role="alert"
-						>
-							<span className="font-medium">
-								ユーザー情報取得APIが上限に達しました
-							</span>
+						<div role="alert" className="alert alert-warning mb-4">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-6 w-6 shrink-0 stroke-current"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<title>Warning</title>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+								/>
+							</svg>
+							<span>ユーザー情報取得APIが上限に達しました</span>
 						</div>
 					) : (
-						<div className="overflow-x-auto">
-							<table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-4">
-								<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+						<div className="overflow-x-auto mb-4">
+							<table className="table bg-primary-content">
+								<thead>
 									<tr>
-										<th scope="col" className="px-6 py-3">
-											ID
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Name
-										</th>
-										<th scope="col" className="px-6 py-3">
-											Username
-										</th>
+										<th scope="col">ID</th>
+										<th scope="col">Name</th>
+										<th scope="col">Username</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-										<td className="px-6 py-4">{ret?.data?.id}</td>
-										<td className="px-6 py-4">{ret?.data?.name}</td>
-										<td className="px-6 py-4">{ret?.data?.username}</td>
+									<tr>
+										<td>{ret?.data?.id}</td>
+										<td>{ret?.data?.name}</td>
+										<td>{ret?.data?.username}</td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
 					)}
-					<h3 className="mb-1 text-2xl font-bold dark:text-white">
+					<h3 className="mb-1 text-2xl font-bold">
 						別のアカウントを使用する場合は
 						<a
 							className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
