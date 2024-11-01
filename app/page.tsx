@@ -12,7 +12,7 @@ export default async function Page() {
 		<div className="mx-auto p-4 prose">
 			<p>Webhookで𝕏にポストをできるようにするウェブアプリケーションです</p>
 			{message !== undefined ? (
-				<div role="alert" className="alert alert-error">
+				<div role="alert" className="alert alert-error mb-4">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						className="h-6 w-6 shrink-0 stroke-current"
@@ -87,7 +87,7 @@ async function KeyInfo(props: { wkey: string }) {
 	return (
 		<>
 			{keyError ? (
-				<div role="alert" className="alert alert-error">
+				<div role="alert" className="alert alert-error mb-4">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						className="h-6 w-6 shrink-0 stroke-current"
