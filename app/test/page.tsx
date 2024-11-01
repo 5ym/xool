@@ -11,8 +11,7 @@ export default async function Page() {
 	return (
 		<div className="p-4 flex justify-center">
 			<CodeBlock
-				code={
-`{
+				code={`{
 	"accsesToken": "${existUser?.accessToken}",
 	"refreshToken": "${existUser?.refreshToken}"
 }`}

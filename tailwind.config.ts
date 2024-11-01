@@ -1,6 +1,6 @@
+import { default as typographyPlugin } from "@tailwindcss/typography";
 import daisyui from "daisyui";
 import type { Config } from "tailwindcss";
-import { default as typographyPlugin } from "@tailwindcss/typography";
 
 const config: Config = {
 	content: [
