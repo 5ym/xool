@@ -15,11 +15,6 @@ const config: Config = {
 				serif: ["BIZ UDPMincho", "var(--font-mincho)"],
 				mono: ["MesloLGS NF"],
 			},
-			backgroundImage: {
-				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-				"gradient-conic":
-					"conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-			},
 		},
 	},
 	plugins: [typographyPlugin, daisyui],
