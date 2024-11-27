@@ -15,7 +15,7 @@ export default async function Page() {
 	return (
 		<>
 			<div className="prose mx-auto mb-4">
-				<h2>LGTM画像を生成するウェブアプリです。</h2>
+				<h2>LGTM画像が生成できます</h2>
 				{existUser && wkey ? (
 					<Upload userKey={wkey} />
 				) : (
