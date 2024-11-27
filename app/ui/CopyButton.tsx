@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useState } from "react";
 import Toast from "./Toast";
 
@@ -10,23 +8,17 @@ export default function CopyButton({ fileName }: { fileName: string }) {
 			`![LGTM](https://${window.location.origin}/images/${fileName})`,
 		);
 		setMessage("リンクをコピーしました");
-        setTimeout(() => {
-            setMessage("")
-        }, 2000)
+		setTimeout(() => {
+			setMessage("");
+		}, 2000);
 	}, [fileName]);
 
 	return (
 		<>
 			<button
 				type="button"
-				className="btn btn-square"
-				style={{
-					position: "absolute",
-					right: ".5rem",
-					top: ".5rem",
-					opacity: 0,
-					transition: "all .3s",
-				}}
+				className="btn btn-square invisible group-hover/item:visible absolute right-3 top-3"
+				style={{}}
 				onClick={onClickCopy}
 			>
 				<svg

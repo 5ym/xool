@@ -24,8 +24,8 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="ja" className={`${gothic.variable} ${mincho.variable}`}>
-			<body>
+		<html lang="ja" className={`${gothic.variable} ${mincho.variable} h-full`}>
+			<body className="h-full">
 				<nav className="navbar">
 					<div className="flex-1">
 						<Link className="btn btn-ghost text-xl" href="/">
@@ -38,7 +38,7 @@ export default function RootLayout({
 						</ul>
 					</div>
 				</nav>
-				<main>{children}</main>
+				<main className="h-full">{children}</main>
 			</body>
 		</html>
 	);

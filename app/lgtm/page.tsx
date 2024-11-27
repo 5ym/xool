@@ -3,8 +3,8 @@ import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import CopyButton from "../ui/CopyButton";
+import Gallery from "../ui/Gallery";
 import Upload from "../ui/Upload";
-import styles from "./Image.module.css";
 
 export default async function Page() {
 	const cookieStore = await cookies();
@@ -20,7 +20,7 @@ export default async function Page() {
 
 	return (
 		<>
-			<div className="prose mx-auto mb-4">
+			<div className="prose mx-auto p-4">
 				<h2>LGTM画像が生成できます</h2>
 				{existUser && wkey ? (
 					<Upload userKey={wkey} />
@@ -37,14 +37,7 @@ export default async function Page() {
 					</>
 				)}
 			</div>
-			<div className="flex flex-wrap justify-center items-center">
-				{imageList.map((image) => (
-					<div key={image.fileName} className={styles.image}>
-						<CopyButton fileName={image.fileName} />
-						<img src={`/images/${image.fileName}`} alt="LGTM" />
-					</div>
-				))}
-			</div>
+			<Gallery imageList={imageList} />
 		</>
 	);
 }
