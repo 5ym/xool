@@ -2,7 +2,9 @@ import type { LImage, User } from "@/utils/Model";
 import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import CopyButton from "../ui/CopyButton";
 import Upload from "../ui/Upload";
+import styles from "./Image.module.css";
 
 export default async function Page() {
 	const cookieStore = await cookies();
@@ -10,7 +12,11 @@ export default async function Page() {
 	const userCollection = (await mongo()).collection<User>("user");
 	const existUser = await userCollection.findOne({ key: wkey });
 	const imaageCollection = (await mongo()).collection<LImage>("lImage");
-	const imageList = await imaageCollection.find().limit(20).sort("createdAt", -1).toArray();
+	const imageList = await imaageCollection
+		.find()
+		.limit(20)
+		.sort("createdAt", -1)
+		.toArray();
 
 	return (
 		<>
@@ -32,9 +38,12 @@ export default async function Page() {
 				)}
 			</div>
 			<div className="flex flex-wrap justify-center items-center">
-				{imageList.map((image) => 
-					<img key={image.fileName} src={`/images/${image.fileName}`} alt="LGTM" />
-				)}
+				{imageList.map((image) => (
+					<div key={image.fileName} className={styles.image}>
+						<CopyButton fileName={image.fileName} />
+						<img src={`/images/${image.fileName}`} alt="LGTM" />
+					</div>
+				))}
 			</div>
 		</>
 	);

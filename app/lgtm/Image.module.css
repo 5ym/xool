@@ -1,0 +1,6 @@
+.image {
+	position: relative;
+}
+.image:hover button {
+	opacity: 1 !important;
+}
