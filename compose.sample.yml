@@ -18,6 +18,17 @@ services:
       - "traefik.http.routers.xool.tls=true"
     depends_on:
       - db
+      
+  xool-web:
+    image: nginx
+    volumes:
+      - ./images:/usr/share/nginx/html/images
+    networks:
+      - docker_default
+    labels:
+      - "traefik.http.routers.xool-web.rule=Host(`x.localhost`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.xool-web.tls=true"
+
   db:
     image: mongo:6
     environment:
