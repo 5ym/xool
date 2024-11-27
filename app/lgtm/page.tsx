@@ -41,7 +41,7 @@ export default async function Page() {
 				{imageList.map((image) => (
 					<div key={image.fileName} className={styles.image}>
 						<CopyButton fileName={image.fileName} />
-						<img src={`/images/${image.fileName}`} alt="LGTM" />
+						<img src={`/static/${image.fileName}`} alt="LGTM" />
 					</div>
 				))}
 			</div>

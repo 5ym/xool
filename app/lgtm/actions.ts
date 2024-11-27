@@ -17,7 +17,7 @@ export async function create(files: FileList | null, userKey: string) {
 				height: 500,
 				fit: "inside",
 			})
-
+			.rotate()
 			.webp({ quality: 80 })
 			.toBuffer();
 		const image = sharp(buffer);
@@ -40,7 +40,7 @@ export async function create(files: FileList | null, userKey: string) {
 					left: 0,
 				},
 			])
-			.toFile(`public/images/${fileName}`);
+			.toFile(`public/static/${fileName}`);
 		collection.insertOne({
 			fileName: fileName,
 			userKey: userKey,

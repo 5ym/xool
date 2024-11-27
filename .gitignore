@@ -35,5 +35,5 @@ yarn-error.log*
 next-env.d.ts
 
 /compose.yml
-/public/images/*
+/public/static/*
 !.gitkeep
