@@ -1,17 +1,25 @@
-import { useCallback, useState } from "react";
+import {
+	type MouseEvent,
+	useCallback,
+	useState,
+} from "react";
 import Toast from "./Toast";
 
 export default function CopyButton({ fileName }: { fileName: string }) {
 	const [message, setMessage] = useState("");
-	const onClickCopy = useCallback(() => {
-		navigator.clipboard.writeText(
-			`![LGTM](https://${window.location.origin}/images/${fileName})`,
-		);
-		setMessage("リンクをコピーしました");
-		setTimeout(() => {
-			setMessage("");
-		}, 2000);
-	}, [fileName]);
+	const onClickCopy = useCallback(
+		(e: MouseEvent<HTMLButtonElement>) => {
+			e.stopPropagation();
+			navigator.clipboard.writeText(
+				`![LGTM](https://${window.location.origin}/images/${fileName})`,
+			);
+			setMessage("リンクをコピーしました");
+			setTimeout(() => {
+				setMessage("");
+			}, 2000);
+		},
+		[fileName],
+	);
 
 	return (
 		<>
