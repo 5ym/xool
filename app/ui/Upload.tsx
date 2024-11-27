@@ -9,11 +9,14 @@ export default function Upload({ userKey }: { userKey: string }) {
 	const router = useRouter();
 	const onSelectImage = useCallback(
 		async (e: React.ChangeEvent<HTMLInputElement>) => {
-			setIsGenerating(true);
-			await create(e.target.files, userKey);
-			router.refresh();
-			e.target.value = "";
-			setIsGenerating(false);
+            try {
+                setIsGenerating(true);
+                await create(e.target.files, userKey);    
+            } finally {
+                router.refresh();
+                e.target.value = "";
+                setIsGenerating(false);    
+            }
 		},
 		[router, userKey],
 	);
