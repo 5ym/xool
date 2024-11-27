@@ -3,7 +3,7 @@ WORKDIR /usr/src/app
 EXPOSE 3000
 
 FROM base AS builder
-ENV NODE_ENV production
+ENV NODE_ENV=production
 COPY package.json bun.lockb ./
 RUN bun i --frozen-lockfile
 COPY . .

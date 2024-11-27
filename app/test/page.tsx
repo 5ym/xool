@@ -1,5 +1,5 @@
 import CodeBlock from "@/app/ui/CodeBlock";
-import type User from "@/utils/UserModel";
+import type { User } from "@/utils/Model";
 import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 

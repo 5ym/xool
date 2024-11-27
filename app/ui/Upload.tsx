@@ -1,15 +1,21 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { create } from "../lgtm/actions";
 
-export default function Upload() {
+export default function Upload({ userKey }: { userKey: string }) {
 	const [isGenerating, setIsGenerating] = useState(false);
+	const router = useRouter();
 	const onSelectImage = useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			create(e.target.files);
+		async (e: React.ChangeEvent<HTMLInputElement>) => {
+			setIsGenerating(true);
+			await create(e.target.files, userKey);
+			router.refresh();
+			e.target.value = "";
+			setIsGenerating(false);
 		},
-		[],
+		[router, userKey],
 	);
 
 	return (
@@ -23,8 +29,8 @@ export default function Upload() {
 			/>
 			{isGenerating && (
 				<>
-					<progress className="progress w-56" />
-					<span className="ml-4">画像生成中です</span>
+					<progress className="progress w-56 ml-4" />
+					<span className="ml-4">画像生成中</span>
 				</>
 			)}
 		</div>

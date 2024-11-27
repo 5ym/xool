@@ -1,4 +1,4 @@
-import type User from "./UserModel";
+import type { User } from "./Model";
 import mongo from "./db";
 
 export async function client(

@@ -1,4 +1,4 @@
-import type User from "@/utils/UserModel";
+import type { User } from "@/utils/Model";
 import { client, getMe } from "@/utils/client";
 import mongo from "@/utils/db";
 import { NextResponse } from "next/server";
@@ -67,6 +67,6 @@ async function generateKey() {
 	const key = crypto.randomUUID();
 	const collection = (await mongo()).collection<User>("user");
 	const existUser = await collection.findOne({ key: key });
-	if (existUser !== null) generateKey();
+	if (existUser !== null) return await generateKey();
 	return key;
 }
