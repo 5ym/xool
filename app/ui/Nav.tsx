@@ -13,8 +13,8 @@ export default function Nav() {
 				</Link>
 			</li>
 			<li>
-				<Link href="/test" className={pathname === "/test" ? "active" : ""}>
-					Test
+				<Link href="/lgtm" className={pathname === "/lgtm" ? "active" : ""}>
+					LGTM
 				</Link>
 			</li>
 		</>

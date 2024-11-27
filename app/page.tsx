@@ -1,5 +1,5 @@
-import CodeBlock from "@/components/CodeBlock";
-import { autoAction } from "@/components/client";
+import CodeBlock from "@/app/ui/CodeBlock";
+import { autoAction } from "@/utils/client";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { Suspense } from "react";

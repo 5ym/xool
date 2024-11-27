@@ -1,6 +1,6 @@
-import CodeBlock from "@/components/CodeBlock";
-import type User from "@/components/UserModel";
-import mongo from "@/components/db";
+import CodeBlock from "@/app/ui/CodeBlock";
+import type User from "@/utils/UserModel";
+import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 
 export default async function Page() {

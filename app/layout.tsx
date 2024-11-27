@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BIZ_UDPGothic, BIZ_UDPMincho } from "next/font/google";
 import "./globals.css";
-import Nav from "@/components/Nav";
+import Nav from "@/app/ui/Nav";
 import Link from "next/link";
 export const metadata: Metadata = {
 	title: "𝕏ool",

@@ -1,33 +1,43 @@
-import type User from "@/components/UserModel";
-import { client, getMe } from "@/components/client";
-import mongo from "@/components/db";
-import { redirect } from "next/navigation";
+import type User from "@/utils/UserModel";
+import { client, getMe } from "@/utils/client";
+import mongo from "@/utils/db";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
-	const res = NextResponse.redirect(`https://${process.env.HOST}`);
+	const errorRes = NextResponse.redirect(`https://${process.env.HOST}`);
 	const code = searchParams.get("code");
-	if (process.env.HASH !== searchParams.get("state") || !code) return res;
+	const redirect = searchParams.get("redirect");
+	if (process.env.HASH !== searchParams.get("state") || !code) {
+		errorRes.cookies.set("message", "不正なリクエストです");
+		return errorRes;
+	}
 	const params = new URLSearchParams({
 		grant_type: "authorization_code",
 		code: code,
 		code_verifier: "challenge",
-		redirect_uri: `https://${process.env.HOST}/api/cb`,
+		redirect_uri: `https://${process.env.HOST}/api/cb?redirect=${redirect}`,
 	});
 	const data = await client("POST", "oauth2/token", params.toString());
-	if (data.error === "invalid_request") redirect("/api/oauth");
+	if (data.error === "invalid_request") {
+		return NextResponse.redirect(
+			`https://${process.env.HOST}/api/oauth?=${searchParams.get("redirect") ?? ""}`,
+		);
+	}
 
 	const user = await getMe(data.access_token);
 	if (user.status === 429) {
-		res.cookies.set(
+		errorRes.cookies.set(
 			"message",
 			"API利用上限に達しましたしばらく経ってから再試行してください",
 		);
-		return res;
+		return errorRes;
 	}
 	const collection = (await mongo()).collection<User>("user");
 	const existUser = await collection.findOne({ socialId: user.data.id });
+	const successRes = NextResponse.redirect(
+		`https://${process.env.HOST}/${searchParams.get("redirect") ?? ""}`,
+	);
 	if (existUser !== null) {
 		await collection.updateOne(
 			{ socialId: user.data.id },
@@ -38,8 +48,8 @@ export async function GET(request: Request) {
 				},
 			},
 		);
-		res.cookies.set("key", existUser.key, { maxAge: 1209600 });
-		return res;
+		successRes.cookies.set("key", existUser.key, { maxAge: 1209600 });
+		return successRes;
 	}
 	const key = await generateKey();
 	collection.insertOne({
@@ -48,9 +58,9 @@ export async function GET(request: Request) {
 		key: key,
 		socialId: user.data.id,
 	});
-	res.cookies.set("key", key, { maxAge: 1209600 });
+	successRes.cookies.set("key", key, { maxAge: 1209600 });
 
-	return res;
+	return successRes;
 }
 
 async function generateKey() {
