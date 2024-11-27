@@ -13,4 +13,5 @@ FROM base
 USER bun
 COPY --from=builder --chown=bun:bun /usr/src/app/.next/standalone .
 COPY --from=builder --chown=bun:bun /usr/src/app/.next/static .next/static
+COPY --from=builder --chown=bun:bun /usr/src/app/public public
 CMD [ "server.js" ]
