@@ -7,7 +7,7 @@ export default function CopyButton({ fileName }: { fileName: string }) {
 	const [message, setMessage] = useState("");
 	const onClickCopy = useCallback(() => {
 		navigator.clipboard.writeText(
-			`![LGTM](https://${window.location.origin}/static/${fileName})`,
+			`![LGTM](https://${window.location.origin}/images/${fileName})`,
 		);
 		setMessage("リンクをコピーしました");
         setTimeout(() => {

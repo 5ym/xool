@@ -40,7 +40,7 @@ export async function create(files: FileList | null, userKey: string) {
 					left: 0,
 				},
 			])
-			.toFile(`public/static/${fileName}`);
+			.toFile(`images/${fileName}`);
 		collection.insertOne({
 			fileName: fileName,
 			userKey: userKey,
