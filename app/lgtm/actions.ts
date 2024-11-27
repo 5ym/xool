@@ -22,7 +22,7 @@ export async function create(files: FileList | null, userKey: string) {
 			.toBuffer();
 		const image = sharp(buffer);
 		const metadata = await image.metadata();
-		const lgtm = await sharp("utils/lgtm.webp")
+		const lgtm = await sharp("public/lgtm.webp")
 			.resize({
 				width: metadata.width,
 				height: metadata.height,
