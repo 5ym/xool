@@ -32,7 +32,7 @@ export default function Upload({ userKey }: { userKey: string }) {
 			/>
 			{isGenerating && (
 				<>
-					<progress className="progress w-56 ml-4" />
+					<progress className="progress w-52 ml-4" />
 					<span className="ml-4">画像生成中</span>
 				</>
 			)}
