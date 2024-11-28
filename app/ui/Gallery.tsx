@@ -3,9 +3,7 @@
 import { useRef, useState } from "react";
 import CopyButton from "./CopyButton";
 
-export default function Gallery({
-	fileNameList,
-}: { fileNameList: string[] }) {
+export default function Gallery({ fileNameList }: { fileNameList: string[] }) {
 	const [diaImage, setDiaImage] = useState("");
 	const dialog = useRef<HTMLDialogElement>(null);
 	const onClickItem = (fileName: string) => {
@@ -27,7 +25,7 @@ export default function Gallery({
 					>
 						<CopyButton
 							fileName={fileName}
-							className="invisible group-hover/item:visible absolute right-3 top-3"
+							className="invisible group-hover/item:visible"
 						/>
 						<img
 							src={`/images/${fileName}`}
@@ -38,15 +36,10 @@ export default function Gallery({
 				))}
 			</div>
 			<dialog ref={dialog} className="modal">
-				<div className="modal-box">
-					<img src={`/images/${diaImage}`} alt="LGTM" className="mx-auto" />
-					<div className="modal-action">
-						<CopyButton fileName={diaImage} />
-						<form method="dialog">
-							<button type="button" className="btn" onClick={closeDialog}>
-								Close
-							</button>
-						</form>
+				<div className="modal-box max-w-[60%]">
+					<div className="relative">
+						<img src={`/images/${diaImage}`} alt="LGTM" className="w-full" />
+						<CopyButton fileName={diaImage} onClick={closeDialog} />
 					</div>
 				</div>
 				<form method="dialog" className="modal-backdrop">

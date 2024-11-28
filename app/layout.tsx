@@ -3,8 +3,8 @@ import { BIZ_UDPGothic, BIZ_UDPMincho } from "next/font/google";
 import "./globals.css";
 import Nav from "@/app/ui/Nav";
 import Link from "next/link";
-import Toast from "./ui/Toast";
 import GlobalContext from "./ui/GlobalContext";
+import Toast from "./ui/Toast";
 export const metadata: Metadata = {
 	title: "𝕏ool",
 	description: "Tool for 𝕏",

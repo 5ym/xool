@@ -4,8 +4,9 @@ import { Context } from "./GlobalContext";
 export default function CopyButton({
 	fileName,
 	className,
-}: { fileName: string; className?: string }) {
-	const { setMessage } = useContext(Context)
+	onClick,
+}: { fileName: string; className?: string; onClick?: () => void }) {
+	const { setMessage } = useContext(Context);
 	const onClickCopy = useCallback(
 		(e: MouseEvent<HTMLButtonElement>) => {
 			e.stopPropagation();
@@ -15,14 +16,17 @@ export default function CopyButton({
 			if (setMessage) {
 				setMessage("リンクをコピーしました");
 			}
+			if (onClick) {
+				onClick();
+			}
 		},
-		[fileName, setMessage],
+		[fileName, setMessage, onClick],
 	);
 
 	return (
 		<button
 			type="button"
-			className={`btn btn-square ${className}`}
+			className={`btn btn-square absolute right-3 top-3 ${className}`}
 			onClick={onClickCopy}
 		>
 			<svg

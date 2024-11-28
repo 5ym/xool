@@ -7,7 +7,7 @@ import { Context } from "./GlobalContext";
 
 export default function Upload({ userKey }: { userKey: string }) {
 	const [isGenerating, setIsGenerating] = useState(false);
-	const { setMessage } = useContext(Context)
+	const { setMessage } = useContext(Context);
 	const router = useRouter();
 	const onSelectImage = useCallback(
 		async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,7 +16,7 @@ export default function Upload({ userKey }: { userKey: string }) {
 				await create(e.target.files, userKey);
 			} finally {
 				if (setMessage) {
-					setMessage('画像生成完了')
+					setMessage("画像生成完了");
 				}
 				router.refresh();
 				e.target.value = "";
