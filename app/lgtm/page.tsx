@@ -21,7 +21,7 @@ export default async function Page() {
 	return (
 		<>
 			<div className="prose mx-auto p-4">
-				<h2>LGTM画像が生成できます</h2>
+				<p>LGTM画像が生成できます<br />Tenor等から直接ドラッグアンドドロップでも登録できます</p>
 				{existUser && wkey ? (
 					<Upload userKey={wkey} />
 				) : (
