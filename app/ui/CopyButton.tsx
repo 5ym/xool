@@ -10,7 +10,7 @@ export default function CopyButton({
 		(e: MouseEvent<HTMLButtonElement>) => {
 			e.stopPropagation();
 			navigator.clipboard.writeText(
-				`![LGTM](https://${window.location.origin}/images/${fileName})`,
+				`![LGTM](${window.location.origin}/images/${fileName})`,
 			);
 			if (setMessage) {
 				setMessage("リンクをコピーしました");
