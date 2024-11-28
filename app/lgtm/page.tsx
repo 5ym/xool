@@ -39,7 +39,7 @@ export default async function Page() {
 					type="radio"
 					name="my_tabs_1"
 					role="tab"
-					className="tab min-w-52 ml-[calc((100vw-26rem)/2)]"
+					className="tab min-w-24 ml-24 md:min-w-52 md:ml-52"
 					aria-label="新着"
 					defaultChecked
 				/>
@@ -51,7 +51,7 @@ export default async function Page() {
 					type="radio"
 					name="my_tabs_1"
 					role="tab"
-					className="tab min-w-52"
+					className="tab min-w-24 md:min-w-52"
 					aria-label="自分"
 				/>
 				<div role="tabpanel" className="tab-content">
