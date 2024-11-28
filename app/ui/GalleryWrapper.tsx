@@ -9,9 +9,9 @@ export default async function GalleryWrapper({
 	const imaageCollection = (await mongo()).collection<LImage>("lImage");
 	let imageList: WithId<LImage>[] = [];
 	if (userKey) {
-        imageList = await imaageCollection
-            .find({userKey: userKey})
-            .sort("createdAt", -1)
+		imageList = await imaageCollection
+			.find({ userKey: userKey })
+			.sort("createdAt", -1)
 			.toArray();
 	} else {
 		imageList = await imaageCollection

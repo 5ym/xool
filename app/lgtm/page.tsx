@@ -39,7 +39,7 @@ export default async function Page() {
 					type="radio"
 					name="my_tabs_1"
 					role="tab"
-					className="tab min-w-24 ml-24 md:min-w-52 md:ml-52"
+					className="tab min-w-20 ml-4 md:min-w-80"
 					aria-label="新着"
 					defaultChecked
 				/>
@@ -51,12 +51,23 @@ export default async function Page() {
 					type="radio"
 					name="my_tabs_1"
 					role="tab"
-					className="tab min-w-24 md:min-w-52"
+					className="tab min-w-20 md:min-w-80"
 					aria-label="自分"
 				/>
 				<div role="tabpanel" className="tab-content">
-					<GalleryWrapper userKey={wkey} />
+					{wkey ? (
+						<GalleryWrapper userKey={wkey} />
+					) : (
+						<Link
+							href="/api/oauth?redirect=lgtm"
+							className="text-white bg-black btn"
+						>
+							<span>Sign in with</span>
+							<span className="text-2xl">𝕏</span>
+						</Link>
+					)}
 				</div>
+				<span className="tab mr-4"/>
 			</div>
 		</>
 	);
