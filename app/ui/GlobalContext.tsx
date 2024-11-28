@@ -10,8 +10,10 @@ import {
 
 export const Context = createContext<{
 	message?: string;
-	setMessage?: Dispatch<SetStateAction<string | undefined>>;
-}>({});
+	setMessage: Dispatch<SetStateAction<string | undefined>>;
+}>({
+	setMessage: () => {}
+});
 export default function GlobalContext({ children }: { children: ReactNode }) {
 	const [message, setMessage] = useState<string>();
 

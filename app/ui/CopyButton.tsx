@@ -13,9 +13,7 @@ export default function CopyButton({
 			navigator.clipboard.writeText(
 				`![LGTM](${window.location.origin}/images/${fileName})`,
 			);
-			if (setMessage) {
-				setMessage("リンクをコピーしました");
-			}
+			setMessage("リンクをコピーしました");
 			if (onClick) {
 				onClick();
 			}

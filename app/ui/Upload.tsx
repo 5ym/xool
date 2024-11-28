@@ -21,9 +21,7 @@ export default function Upload({ userKey }: { userKey: string }) {
 				setIsGenerating(true);
 				await create(e.target.files, userKey);
 			} finally {
-				if (setMessage) {
-					setMessage("画像生成完了");
-				}
+				setMessage("画像生成完了");
 				router.refresh();
 				e.target.value = "";
 				setIsGenerating(false);
@@ -35,12 +33,10 @@ export default function Upload({ userKey }: { userKey: string }) {
 	useEffect(() => {
 		const onDrop = async (ev: DragEvent) => {
 			ev.preventDefault();
-			if (ev.dataTransfer?.files) {
+			if (!isGenerating && ev.dataTransfer?.files) {
 				setIsGenerating(true);
 				await create(ev.dataTransfer?.files, userKey);
-				if (setMessage) {
-					setMessage("画像生成完了");
-				}
+				setMessage("画像生成完了");
 				router.refresh();
 				setIsGenerating(false);
 			}
@@ -54,7 +50,7 @@ export default function Upload({ userKey }: { userKey: string }) {
 			document.removeEventListener("drop", onDrop);
 			document.removeEventListener("dragover", onDragOver);
 		};
-	}, [router, userKey, setMessage]);
+	}, [router, userKey, setMessage, isGenerating]);
 
 	return (
 		<>
