@@ -15,19 +15,19 @@ export default function Gallery({ fileNameList }: { fileNameList: string[] }) {
 	};
 	return (
 		<>
-			<div className="flex flex-wrap gap-3">
+			<div className="flex flex-wrap gap-3 overflow-x-hidden overflo-y-visible py-3">
 				{fileNameList.map((fileName) => (
 					// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 					<div
 						key={fileName}
-						className="relative group/item grow h-[250px] max-w-[500px] cursor-pointer rounded-3xl overflow-hidden bg-primary-content"
+						className="relative grow h-64 max-w-lg cursor-pointer rounded-3xl overflow-hidden bg-primary-content hover:scale-105 transition-all"
 						onClick={() => onClickItem(fileName)}
 					>
 						<CopyButton fileName={fileName} />
 						<img
 							src={`/images/${fileName}`}
 							alt="LGTM"
-							className="h-full w-full object-cover group-hover/item:object-contain mx-auto"
+							className="h-full w-full object-cover"
 						/>
 					</div>
 				))}
