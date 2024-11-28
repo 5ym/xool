@@ -23,10 +23,7 @@ export default function Gallery({ fileNameList }: { fileNameList: string[] }) {
 						className="relative group/item grow h-[250px] max-w-[500px] cursor-pointer rounded-3xl overflow-hidden bg-primary-content"
 						onClick={() => onClickItem(fileName)}
 					>
-						<CopyButton
-							fileName={fileName}
-							className="invisible group-hover/item:visible"
-						/>
+						<CopyButton fileName={fileName} />
 						<img
 							src={`/images/${fileName}`}
 							alt="LGTM"
@@ -39,7 +36,11 @@ export default function Gallery({ fileNameList }: { fileNameList: string[] }) {
 				<div className="modal-box max-w-[60%]">
 					<div className="relative">
 						<img src={`/images/${diaImage}`} alt="LGTM" className="w-full" />
-						<CopyButton fileName={diaImage} onClick={closeDialog} />
+						<CopyButton
+							fileName={diaImage}
+							onClick={closeDialog}
+							className="invisible group-hover/item:visible"
+						/>
 					</div>
 				</div>
 				<form method="dialog" className="modal-backdrop">
