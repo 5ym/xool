@@ -12,7 +12,7 @@ export const Context = createContext<{
 	message?: string;
 	setMessage: Dispatch<SetStateAction<string | undefined>>;
 }>({
-	setMessage: () => {}
+	setMessage: () => {},
 });
 export default function GlobalContext({ children }: { children: ReactNode }) {
 	const [message, setMessage] = useState<string>();

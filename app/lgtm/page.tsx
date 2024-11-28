@@ -2,7 +2,7 @@ import type { LImage, User } from "@/utils/Model";
 import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import Gallery from "../ui/Gallery";
+import GalleryWrapper from "../ui/GalleryWrapper";
 import Upload from "../ui/Upload";
 
 export default async function Page() {
@@ -10,18 +10,15 @@ export default async function Page() {
 	const wkey = cookieStore.get("key")?.value;
 	const userCollection = (await mongo()).collection<User>("user");
 	const existUser = await userCollection.findOne({ key: wkey });
-	const imaageCollection = (await mongo()).collection<LImage>("lImage");
-	const imageList = await imaageCollection
-		.find()
-		.limit(20)
-		.sort("createdAt", -1)
-		.toArray();
-	const fileNameList = imageList.map((image) => image.fileName);
 
 	return (
 		<>
 			<div className="prose mx-auto p-4">
-				<p>LGTM画像が生成できます<br />Tenor等から直接ドラッグアンドドロップでも登録できます</p>
+				<p>
+					LGTM画像が生成できます
+					<br />
+					Tenor等から直接ドラッグアンドドロップでも登録できます
+				</p>
 				{existUser && wkey ? (
 					<Upload userKey={wkey} />
 				) : (
@@ -37,7 +34,30 @@ export default async function Page() {
 					</>
 				)}
 			</div>
-			<Gallery fileNameList={fileNameList} />
+			<div role="tablist" className="tabs tabs-bordered py-3">
+				<input
+					type="radio"
+					name="my_tabs_1"
+					role="tab"
+					className="tab min-w-52 ml-[calc((100vw-26rem)/2)]"
+					aria-label="新着"
+					defaultChecked
+				/>
+				<div role="tabpanel" className="tab-content">
+					<GalleryWrapper />
+				</div>
+
+				<input
+					type="radio"
+					name="my_tabs_1"
+					role="tab"
+					className="tab min-w-52"
+					aria-label="自分"
+				/>
+				<div role="tabpanel" className="tab-content">
+					<GalleryWrapper userKey={wkey} />
+				</div>
+			</div>
 		</>
 	);
 }
