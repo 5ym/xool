@@ -41,7 +41,7 @@ export default function RootLayout({
 					</div>
 				</nav>
 				<GlobalContext>
-					<main className="h-full">{children}</main>
+					<main>{children}</main>
 					<Toast />
 				</GlobalContext>
 			</body>
