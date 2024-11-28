@@ -9,8 +9,7 @@ export default async function Page() {
 	const cookieStore = await cookies();
 	const wkey = cookieStore.get("key")?.value;
 	const userCollection = (await mongo()).collection<User>("user");
-	// const existUser = await userCollection.findOne({ key: wkey });
-	const existUser = true;
+	const existUser = await userCollection.findOne({ key: wkey });
 	const imaageCollection = (await mongo()).collection<LImage>("lImage");
 	const imageList = await imaageCollection
 		.find()
