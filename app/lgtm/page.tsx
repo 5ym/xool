@@ -34,7 +34,7 @@ export default async function Page() {
 					</>
 				)}
 			</div>
-			<div role="tablist" className="tabs tabs-bordered py-3">
+			<div role="tablist" className="tabs tabs-bordered mb-3">
 				<input
 					type="radio"
 					name="my_tabs_1"
