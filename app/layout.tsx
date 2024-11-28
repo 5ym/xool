@@ -3,6 +3,8 @@ import { BIZ_UDPGothic, BIZ_UDPMincho } from "next/font/google";
 import "./globals.css";
 import Nav from "@/app/ui/Nav";
 import Link from "next/link";
+import Toast from "./ui/Toast";
+import GlobalContext from "./ui/GlobalContext";
 export const metadata: Metadata = {
 	title: "𝕏ool",
 	description: "Tool for 𝕏",
@@ -38,7 +40,10 @@ export default function RootLayout({
 						</ul>
 					</div>
 				</nav>
-				<main className="h-full">{children}</main>
+				<GlobalContext>
+					<main className="h-full">{children}</main>
+					<Toast />
+				</GlobalContext>
 			</body>
 		</html>
 	);

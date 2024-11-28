@@ -2,7 +2,6 @@ import type { LImage, User } from "@/utils/Model";
 import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import CopyButton from "../ui/CopyButton";
 import Gallery from "../ui/Gallery";
 import Upload from "../ui/Upload";
 
@@ -16,7 +15,8 @@ export default async function Page() {
 		.find()
 		.limit(20)
 		.sort("createdAt", -1)
-		.toArray();
+		.toArray()
+	const fileNameList = imageList.map((image) => image.fileName)
 
 	return (
 		<>
@@ -37,7 +37,7 @@ export default async function Page() {
 					</>
 				)}
 			</div>
-			<Gallery imageList={imageList} />
+			<Gallery fileNameList={fileNameList} />
 		</>
 	);
 }
