@@ -33,9 +33,9 @@ export default function Gallery({ fileNameList }: { fileNameList: string[] }) {
 				))}
 			</div>
 			<dialog ref={dialog} className="modal">
-				<div className="modal-box max-w-[60%]">
+				<div className="modal-box w-auto">
 					<div className="relative group/item">
-						<img src={`/images/${diaImage}`} alt="LGTM" className="w-full" />
+						<img src={`/images/${diaImage}`} alt="LGTM" />
 						<CopyButton
 							fileName={diaImage}
 							onClick={closeDialog}
