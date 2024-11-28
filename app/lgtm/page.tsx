@@ -67,7 +67,7 @@ export default async function Page() {
 						</Link>
 					)}
 				</div>
-				<span className="tab mr-4"/>
+				<span className="tab mr-4" />
 			</div>
 		</>
 	);
