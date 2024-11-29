@@ -3,9 +3,14 @@ import { Context } from "./GlobalContext";
 
 export default function CopyButton({
 	fileName,
-	className,
 	onClick,
-}: { fileName: string; className?: string; onClick?: () => void }) {
+	isVisible = true,
+}: {
+	fileName: string;
+	className?: string;
+	onClick?: () => void;
+	isVisible?: boolean;
+}) {
 	const { setMessage } = useContext(Context);
 	const onClickCopy = useCallback(
 		(e: MouseEvent<HTMLButtonElement>) => {
@@ -24,7 +29,7 @@ export default function CopyButton({
 	return (
 		<button
 			type="button"
-			className={`btn btn-square absolute right-3 top-3 ${className}`}
+			className={`btn btn-square absolute right-3 top-3${isVisible ? "" : " invisible group-hover/item:visible"}`}
 			onClick={onClickCopy}
 		>
 			<svg

@@ -16,7 +16,7 @@ export default function Upload({ userKey }: { userKey: string }) {
 			ev.preventDefault();
 			if (!isGenerating && ev.dataTransfer?.files && inputRef.current) {
 				inputRef.current.files = ev.dataTransfer.files;
-				inputRef.current.dispatchEvent(new Event('change'))
+				inputRef.current.dispatchEvent(new Event("change"));
 			}
 		};
 		const onDragOver = (ev: DragEvent) => {

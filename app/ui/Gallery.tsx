@@ -28,7 +28,6 @@ export default function Gallery({ fileNameList }: { fileNameList: string[] }) {
 							src={`/images/${fileName}`}
 							alt="LGTM"
 							className="h-full w-full object-cover"
-							loading="lazy"
 						/>
 					</div>
 				))}
@@ -40,7 +39,7 @@ export default function Gallery({ fileNameList }: { fileNameList: string[] }) {
 						<CopyButton
 							fileName={diaImage}
 							onClick={closeDialog}
-							className="invisible group-hover/item:visible"
+							isVisible={false}
 						/>
 					</div>
 				</div>
