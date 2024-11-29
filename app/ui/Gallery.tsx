@@ -28,6 +28,7 @@ export default function Gallery({ fileNameList }: { fileNameList: string[] }) {
 							src={`/images/${fileName}`}
 							alt="LGTM"
 							className="h-full w-full object-cover"
+							loading="lazy"
 						/>
 					</div>
 				))}
