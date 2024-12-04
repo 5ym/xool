@@ -44,7 +44,7 @@ export default async function Page() {
 					defaultChecked
 				/>
 				<div role="tabpanel" className="tab-content">
-					<GalleryWrapper />
+					<GalleryWrapper userKey={wkey} tab={0} />
 				</div>
 
 				<input
@@ -56,7 +56,7 @@ export default async function Page() {
 				/>
 				<div role="tabpanel" className="tab-content">
 					{wkey ? (
-						<GalleryWrapper userKey={wkey} />
+						<GalleryWrapper userKey={wkey} tab={1} />
 					) : (
 						<Link
 							href="/api/oauth?redirect=lgtm"

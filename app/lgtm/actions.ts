@@ -2,6 +2,8 @@
 
 import type { LImage } from "@/utils/Model";
 import mongo from "@/utils/db";
+import { readdirSync, readFileSync, unlinkSync } from "node:fs";
+import { dirname } from "node:path";
 import sharp from "sharp";
 
 export async function create(files: FileList | null, userKey: string) {
@@ -49,9 +51,16 @@ export async function create(files: FileList | null, userKey: string) {
 	}
 }
 
+export async function deleteFile(fileName: string) {
+	await (await mongo()).collection<LImage>("lImage").deleteOne({
+		fileName: fileName,
+	});
+	unlinkSync(`images/${fileName}`);
+}
+
 async function generateKey() {
 	const key = crypto.randomUUID();
-	const existFile = Bun.file(`${key}.webp`);
+	const existFile = Bun.file(`images/${key}.webp`);
 	if (await existFile.exists()) return await generateKey();
 	return key;
 }

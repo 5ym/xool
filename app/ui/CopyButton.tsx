@@ -3,11 +3,10 @@ import { Context } from "./GlobalContext";
 
 export default function CopyButton({
 	fileName,
-	onClick,
+	onClick = () => {},
 	isVisible = true,
 }: {
 	fileName: string;
-	className?: string;
 	onClick?: () => void;
 	isVisible?: boolean;
 }) {
@@ -19,9 +18,7 @@ export default function CopyButton({
 				`![LGTM](${window.location.origin}/images/${fileName})`,
 			);
 			setMessage("リンクをコピーしました");
-			if (onClick) {
-				onClick();
-			}
+			onClick();
 		},
 		[fileName, setMessage, onClick],
 	);
