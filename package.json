@@ -11,9 +11,9 @@
 	"dependencies": {
 		"hast-util-to-jsx-runtime": "^2.3.2",
 		"mongodb": "^6.10.0",
-		"next": "15.0.3",
-		"react": "19.0.0-rc-66855b96-20241106",
-		"react-dom": "19.0.0-rc-66855b96-20241106",
+		"next": "15.0.4",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
 		"sharp": "^0.33.5"
 	},
 	"devDependencies": {
@@ -21,8 +21,8 @@
 		"@tailwindcss/typography": "^0.5.15",
 		"@types/bun": "^1.1.14",
 		"@types/node": "^22",
-		"@types/react": "^18",
-		"@types/react-dom": "^18",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
 		"daisyui": "^4.12.14",
 		"postcss": "^8",
 		"shiki": "^1.22.0",
