@@ -7,16 +7,16 @@ export default function Toast() {
 	const { message, setMessage } = useContext(Context);
 	const [messageList, setMessageList] = useState<string[]>([]);
 	const [isShow, setIsShow] = useState(true);
-	const showTimeout = useRef<Timer>();
-	const messageTimeout = useRef<Timer>();
+	const showTimeout = useRef<Timer>(null);
+	const messageTimeout = useRef<Timer>(null);
 
 	useEffect(() => {
 		if (message && setMessage) {
 			setIsShow(true);
 			setMessageList([message, ...messageList]);
 			setMessage("");
-			clearTimeout(showTimeout.current);
-			clearTimeout(messageTimeout.current);
+			if (showTimeout.current) clearTimeout(showTimeout.current);
+			if (messageTimeout.current) clearTimeout(messageTimeout.current);
 			showTimeout.current = setTimeout(() => {
 				setIsShow(false);
 			}, 1500);

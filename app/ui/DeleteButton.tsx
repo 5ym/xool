@@ -1,7 +1,7 @@
-import { type MouseEvent, useCallback, useContext } from "react";
-import { Context } from "./GlobalContext";
-import { deleteFile } from "../lgtm/actions";
 import { useRouter } from "next/navigation";
+import { type MouseEvent, useCallback, useContext } from "react";
+import { deleteFile } from "../lgtm/actions";
+import { Context } from "./GlobalContext";
 
 export default function DeleteButton({
 	fileName,
