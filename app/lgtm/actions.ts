@@ -65,19 +65,18 @@ async function generateKey() {
 	if (await existFile.exists()) return await generateKey();
 	return key;
 }
-
+const imageCollection = (await mongo()).collection<LImage>("lImage");
 export async function get(
 	page: number,
 	find: boolean,
 	userKey?: string,
 ): Promise<File[]> {
-	const collection = (await mongo()).collection<LImage>("lImage");
 	const perPage = 30;
 	let list: FindCursor<WithId<LImage>>;
 	if (find) {
-		list = collection.find({ userKey: userKey });
+		list = imageCollection.find({ userKey: userKey });
 	} else {
-		list = collection.find();
+		list = imageCollection.find();
 	}
 	const array = await list
 		.sort({

@@ -5,9 +5,8 @@ import { Context } from "./GlobalContext";
 
 export default function DeleteButton({
 	fileName,
-	onClick = () => {},
 	isVisible = true,
-}: { fileName: string; onClick?: () => void; isVisible?: boolean }) {
+}: { fileName: string; isVisible?: boolean }) {
 	const router = useRouter();
 	const { setMessage } = useContext(Context);
 	const onClickDelete = useCallback(
@@ -17,11 +16,10 @@ export default function DeleteButton({
 				await deleteFile(fileName);
 			} finally {
 				router.refresh();
-				onClick();
 				setMessage("画像削除完了");
 			}
 		},
-		[setMessage, fileName, router, onClick],
+		[setMessage, fileName, router],
 	);
 	return (
 		<button

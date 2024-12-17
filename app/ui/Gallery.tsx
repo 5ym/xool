@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CopyButton from "./CopyButton";
 import DeleteButton from "./DeleteButton";
 import { get } from "../lgtm/actions";
@@ -29,18 +29,21 @@ export default function Gallery({
 		dialog.current?.close();
 	};
 	const [isGetting, setIsGetting] = useState<boolean>(false);
-	const [list, setList] = useState(fileNameList);
+	const [list, setList] = useState<File[]>([]);
+	const viewList = useMemo(
+		() => [...fileNameList, ...list],
+		[fileNameList, list],
+	);
 	const [page, setPage] = useState(2);
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const handleScroll = useCallback(async () => {
-		if (window.innerHeight - window.scrollY < 300 && isGetting === false) {
+		if (window.innerHeight - window.scrollY < 400 && isGetting === false) {
 			setIsGetting(true);
 			const pageList = await get(page, find, userKey);
 			setList([...list, ...pageList]);
 			setPage(page + 1);
 			if (pageList.length === 30) setIsGetting(false);
 		}
-	}, [isGetting, userKey, list, page, setPage, setList, setIsGetting, setPage]);
+	}, [find, isGetting, list, page, userKey]);
 
 	useEffect(() => {
 		handleScroll();
@@ -49,10 +52,17 @@ export default function Gallery({
 			window.removeEventListener("scroll", handleScroll);
 		};
 	}, [handleScroll]);
+	useEffect(() => {
+		if (fileNameList) {
+			setList([]);
+			setPage(2);
+			setIsGetting(false);
+		}
+	}, [fileNameList]);
 	return (
 		<>
 			<div className="flex flex-wrap gap-3 overflow-x-hidden overflo-y-visible py-3">
-				{list.map((file) => (
+				{viewList.map((file) => (
 					// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 					<div
 						key={file.name}
