@@ -3,7 +3,7 @@
 import { unlinkSync } from "node:fs";
 import type { LImage } from "@/utils/Model";
 import mongo from "@/utils/db";
-import type { Collection, FindCursor, WithId } from "mongodb";
+import type { FindCursor, WithId } from "mongodb";
 import sharp from "sharp";
 import type { File } from "../ui/Gallery";
 
@@ -65,13 +65,13 @@ async function generateKey() {
 	if (await existFile.exists()) return await generateKey();
 	return key;
 }
-const imageCollection = (await mongo()).collection<LImage>("lImage");
 export async function get(
 	page: number,
 	find: boolean,
 	userKey?: string,
 ): Promise<File[]> {
 	const perPage = 30;
+	const imageCollection = (await mongo()).collection<LImage>("lImage");
 	let list: FindCursor<WithId<LImage>>;
 	if (find) {
 		list = imageCollection.find({ userKey: userKey });
