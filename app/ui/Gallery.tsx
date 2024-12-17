@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CopyButton from "./CopyButton";
 import DeleteButton from "./DeleteButton";
+import { get } from "../lgtm/actions";
 
 export type File = {
 	name: string;
@@ -11,8 +12,12 @@ export type File = {
 
 export default function Gallery({
 	fileNameList,
+	userKey,
+	find,
 }: {
 	fileNameList: File[];
+	userKey?: string;
+	find: boolean;
 }) {
 	const [diaImage, setDiaImage] = useState<File>();
 	const dialog = useRef<HTMLDialogElement>(null);
@@ -23,10 +28,31 @@ export default function Gallery({
 	const closeDialog = () => {
 		dialog.current?.close();
 	};
+	const [isGetting, setIsGetting] = useState<boolean>(false);
+	const [list, setList] = useState(fileNameList);
+	const [page, setPage] = useState(2);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	const handleScroll = useCallback(async () => {
+		if (window.innerHeight - window.scrollY < 300 && isGetting === false) {
+			setIsGetting(true);
+			const pageList = await get(page, find, userKey);
+			setList([...list, ...pageList]);
+			setPage(page + 1);
+			if (pageList.length === 30) setIsGetting(false);
+		}
+	}, [isGetting, userKey, list, page, setPage, setList, setIsGetting, setPage]);
+
+	useEffect(() => {
+		handleScroll();
+		window.addEventListener("scroll", handleScroll);
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, [handleScroll]);
 	return (
 		<>
 			<div className="flex flex-wrap gap-3 overflow-x-hidden overflo-y-visible py-3">
-				{fileNameList.map((file) => (
+				{list.map((file) => (
 					// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 					<div
 						key={file.name}

@@ -1,10 +1,11 @@
 "use server";
 
-import { readFileSync, readdirSync, unlinkSync } from "node:fs";
-import { dirname } from "node:path";
+import { unlinkSync } from "node:fs";
 import type { LImage } from "@/utils/Model";
 import mongo from "@/utils/db";
 import sharp from "sharp";
+import type { Collection, FindCursor, WithId } from "mongodb";
+import type { File } from "../ui/Gallery";
 
 export async function create(files: FileList | null, userKey: string) {
 	if (files === null) {
@@ -63,4 +64,32 @@ async function generateKey() {
 	const existFile = Bun.file(`images/${key}.webp`);
 	if (await existFile.exists()) return await generateKey();
 	return key;
+}
+
+export async function get(
+	page: number,
+	find: boolean,
+	userKey?: string,
+): Promise<File[]> {
+	const collection = (await mongo()).collection<LImage>("lImage");
+	const perPage = 30;
+	let list: FindCursor<WithId<LImage>>;
+	if (find) {
+		list = collection.find({ userKey: userKey });
+	} else {
+		list = collection.find();
+	}
+	const array = await list
+		.sort({
+			createdAt: -1,
+			_id: -1,
+		})
+		.skip((page - 1) * perPage)
+		.limit(page * perPage)
+		.toArray();
+
+	return array.map((image) => ({
+		name: image.fileName,
+		isDeletable: image.userKey === userKey,
+	}));
 }

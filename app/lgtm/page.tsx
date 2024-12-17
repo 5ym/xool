@@ -1,9 +1,10 @@
-import type { LImage, User } from "@/utils/Model";
+import type { User } from "@/utils/Model";
 import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import GalleryWrapper from "../ui/GalleryWrapper";
 import Upload from "../ui/Upload";
+import Gallery from "../ui/Gallery";
+import { get } from "./actions";
 
 export default async function Page() {
 	const cookieStore = await cookies();
@@ -44,7 +45,11 @@ export default async function Page() {
 					defaultChecked
 				/>
 				<div role="tabpanel" className="tab-content">
-					<GalleryWrapper userKey={wkey} tab={0} />
+					<Gallery
+						fileNameList={await get(1, false, wkey)}
+						userKey={wkey}
+						find={false}
+					/>
 				</div>
 
 				<input
@@ -56,15 +61,13 @@ export default async function Page() {
 				/>
 				<div role="tabpanel" className="tab-content">
 					{wkey ? (
-						<GalleryWrapper userKey={wkey} tab={1} />
+						<Gallery
+							fileNameList={await get(1, true, wkey)}
+							userKey={wkey}
+							find={true}
+						/>
 					) : (
-						<Link
-							href="/api/oauth?redirect=lgtm"
-							className="text-white bg-black btn"
-						>
-							<span>Sign in with</span>
-							<span className="text-2xl">𝕏</span>
-						</Link>
+						<p>作成機能を利用するにはログインしてください</p>
 					)}
 				</div>
 				<span className="tab mr-4" />
