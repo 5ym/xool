@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { get } from "../lgtm/actions";
 import CopyButton from "./CopyButton";
 import DeleteButton from "./DeleteButton";
-import { get } from "../lgtm/actions";
 
 export type File = {
 	name: string;

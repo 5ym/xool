@@ -2,8 +2,8 @@ import type { User } from "@/utils/Model";
 import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import Upload from "../ui/Upload";
 import Gallery from "../ui/Gallery";
+import Upload from "../ui/Upload";
 import { get } from "./actions";
 
 export default async function Page() {
