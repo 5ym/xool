@@ -38,8 +38,10 @@ export default function Upload({ userKey }: { userKey: string }) {
 			try {
 				setIsGenerating(true);
 				await create(inputRef.current.files, userKey);
-			} finally {
 				setMessage("画像生成完了");
+			} catch (e) {
+				setMessage("画像生成失敗");
+			} finally {
 				router.refresh();
 				inputRef.current.value = "";
 				setIsGenerating(false);
