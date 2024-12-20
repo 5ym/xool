@@ -7,7 +7,7 @@ export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
 	const errorRes = NextResponse.redirect(`https://${process.env.HOST}`);
 	const code = searchParams.get("code");
-	const redirect = searchParams.get("redirect");
+	const redirect = searchParams.get("redirect") ?? "";
 	if (process.env.HASH !== searchParams.get("state") || !code) {
 		errorRes.cookies.set("message", "不正なリクエストです");
 		return errorRes;
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 	const data = await client("POST", "oauth2/token", params.toString());
 	if (data.error === "invalid_request") {
 		return NextResponse.redirect(
-			`https://${process.env.HOST}/api/oauth?=${searchParams.get("redirect") ?? ""}`,
+			`https://${process.env.HOST}/api/oauth?=${redirect}`,
 		);
 	}
 
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 	const collection = (await mongo()).collection<User>("user");
 	const existUser = await collection.findOne({ socialId: user.data.id });
 	const successRes = NextResponse.redirect(
-		`https://${process.env.HOST}/${searchParams.get("redirect") ?? ""}`,
+		`https://${process.env.HOST}/${redirect}`,
 	);
 	if (existUser !== null) {
 		await collection.updateOne(
