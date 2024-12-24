@@ -84,7 +84,7 @@ export async function get(
 			_id: -1,
 		})
 		.skip((page - 1) * perPage)
-		.limit(page * perPage)
+		.limit(perPage)
 		.toArray();
 
 	return array.map((image) => ({
