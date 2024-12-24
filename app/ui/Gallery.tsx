@@ -36,9 +36,6 @@ export default function Gallery({
 	);
 	const [page, setPage] = useState(2);
 	const handleScroll = useCallback(async () => {
-		console.log(
-			document.body.scrollHeight - (window.innerHeight + window.scrollY),
-		);
 		if (
 			document.body.scrollHeight - (window.innerHeight + window.scrollY) <
 				300 &&
@@ -48,6 +45,7 @@ export default function Gallery({
 			const pageList = await get(page, find, userKey);
 			setList([...list, ...pageList]);
 			setPage(page + 1);
+			console.log(pageList.length);
 			if (pageList.length === 30) setIsGetting(false);
 		}
 	}, [find, isGetting, list, page, userKey]);
