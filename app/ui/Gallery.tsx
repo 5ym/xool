@@ -45,8 +45,7 @@ export default function Gallery({
 			const pageList = await get(page, find, userKey);
 			setList([...list, ...pageList]);
 			setPage(page + 1);
-			console.log(pageList.length);
-			if (pageList.length === 30) setIsGetting(false);
+			if (pageList.length === 30 * (page - 1)) setIsGetting(false);
 		}
 	}, [find, isGetting, list, page, userKey]);
 
