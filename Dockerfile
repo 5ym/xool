@@ -4,7 +4,7 @@ EXPOSE 3000
 
 FROM base AS builder
 ENV NODE_ENV=production
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 RUN bun i --frozen-lockfile
 COPY . .
 RUN bun run build
