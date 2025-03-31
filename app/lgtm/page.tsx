@@ -1,7 +1,7 @@
-import type { User } from "@/utils/Model";
-import mongo from "@/utils/db";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import mongo from "@/utils/db";
+import type { User } from "@/utils/Model";
 import Gallery from "../ui/Gallery";
 import Upload from "../ui/Upload";
 import { get } from "./actions";

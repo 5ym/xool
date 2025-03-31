@@ -1,5 +1,5 @@
-import type { User } from "./Model";
 import mongo from "./db";
+import type { User } from "./Model";
 
 export async function client(
 	method: string,

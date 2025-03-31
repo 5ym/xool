@@ -1,7 +1,7 @@
-import type { User } from "@/utils/Model";
+import { NextResponse } from "next/server";
 import { client, getMe } from "@/utils/client";
 import mongo from "@/utils/db";
-import { NextResponse } from "next/server";
+import type { User } from "@/utils/Model";
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);

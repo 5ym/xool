@@ -6,7 +6,10 @@ import { Context } from "./GlobalContext";
 export default function DeleteButton({
 	fileName,
 	isVisible = true,
-}: { fileName: string; isVisible?: boolean }) {
+}: {
+	fileName: string;
+	isVisible?: boolean;
+}) {
 	const router = useRouter();
 	const { setMessage } = useContext(Context);
 	const onClickDelete = useCallback(

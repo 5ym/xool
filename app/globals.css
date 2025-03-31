@@ -1,3 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+	--font-sans: BIZ UDPGothic, var(--font-gothic);
+	--font-serif: BIZ UDPMincho, var(--font-mincho);
+	--font-mono: MesloLGS NF;
+}

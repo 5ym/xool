@@ -1,8 +1,8 @@
-import CodeBlock from "@/app/ui/CodeBlock";
-import { autoAction } from "@/utils/client";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { Suspense } from "react";
+import CodeBlock from "@/app/ui/CodeBlock";
+import { autoAction } from "@/utils/client";
 
 export default async function Page() {
 	const cookieStore = await cookies();

@@ -1,7 +1,7 @@
-import CodeBlock from "@/app/ui/CodeBlock";
-import type { User } from "@/utils/Model";
-import mongo from "@/utils/db";
 import { cookies } from "next/headers";
+import CodeBlock from "@/app/ui/CodeBlock";
+import mongo from "@/utils/db";
+import type { User } from "@/utils/Model";
 
 export default async function Page() {
 	const cookieStore = await cookies();

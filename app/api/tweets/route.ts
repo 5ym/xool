@@ -1,5 +1,5 @@
-import { autoAction } from "@/utils/client";
 import { NextResponse } from "next/server";
+import { autoAction } from "@/utils/client";
 
 export async function POST(req: Request) {
 	const { key, text, media } = await req.json();
