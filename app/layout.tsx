@@ -26,7 +26,10 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="ja" className={`${gothic.variable} ${mincho.variable} h-full`}>
+		<html
+			lang="ja"
+			className={`${gothic.variable} ${mincho.variable} antialiased h-full`}
+		>
 			<body className="h-full">
 				<nav className="navbar">
 					<div className="flex-1">
