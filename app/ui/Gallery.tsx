@@ -70,7 +70,7 @@ export default function Gallery({
 					// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 					<div
 						key={file.name}
-						className="relative grow h-64 max-w-lg cursor-pointer rounded-3xl overflow-hidden bg-primary-content hover:scale-105 transition-all"
+						className="relative grow h-64 max-w-lg cursor-pointer rounded-lg overflow-hidden bg-primary-content hover:scale-105 transition-all"
 						onClick={() => onClickItem(file)}
 					>
 						{file.isDeletable && <DeleteButton fileName={file.name} />}

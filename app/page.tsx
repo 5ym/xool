@@ -132,7 +132,7 @@ async function KeyInfo(props: { wkey: string }) {
 						</div>
 					) : (
 						<div className="overflow-x-auto">
-							<table className="table bg-primary-content my-0">
+							<table className="table my-0">
 								<thead>
 									<tr>
 										<th scope="col">ID</th>

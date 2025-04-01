@@ -21,7 +21,7 @@ export default async function CodeBlock({
 			pre: (props) => (
 				<pre
 					{...props}
-					className={`${props.className} px-4 py-3 overflow-auto rounded-2xl ${className}`}
+					className={`${props.className} px-4 py-3 overflow-auto rounded-lg ${className}`}
 				/>
 			),
 		},
