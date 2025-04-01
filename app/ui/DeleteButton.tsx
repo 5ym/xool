@@ -27,7 +27,7 @@ export default function DeleteButton({
 	return (
 		<button
 			type="button"
-			className={`btn btn-square absolute right-3 top-20${isVisible ? "" : " invisible group-hover/item:visible"}`}
+			className={`btn btn-square absolute right-3 top-20 ${isVisible ? "" : " invisible group-hover/item:visible"}`}
 			onClick={onClickDelete}
 		>
 			<svg

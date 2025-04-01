@@ -26,7 +26,7 @@ export default function CopyButton({
 	return (
 		<button
 			type="button"
-			className={`btn btn-square absolute right-3 top-3${isVisible ? "" : " invisible group-hover/item:visible"}`}
+			className={`btn btn-square absolute right-3 top-3 ${isVisible ? "" : "invisible group-hover/item:visible"}`}
 			onClick={onClickCopy}
 		>
 			<svg
