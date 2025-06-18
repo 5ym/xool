@@ -73,42 +73,47 @@ export async function autoAction(
 	return await action(type, accessToken, payload);
 }
 
-async function action(
+type ReturnType<T> = {
+	status?: number;
+	error?: string;
+	data: T;
+};
+
+export async function action(
 	type: string,
 	accessToken: string,
 	payload?: { text?: string; media?: string; id?: string },
 ) {
-	let ret:
-		| {
-				status?: number;
-				error?: string;
-				data?: {
-					id: number;
-					name: string;
-					username: string;
-				};
-		  }
-		| undefined;
 	switch (type) {
 		case "me":
-			ret = await client(METHODS.GET, "users/me", null, accessToken);
-			break;
+			return (await client(
+				METHODS.GET,
+				"users/me",
+				null,
+				accessToken,
+			)) as ReturnType<{
+				id: number;
+				name: string;
+				username: string;
+			}>;
 		case "tweet":
-			ret = await client(
+			return await client(
 				METHODS.POST,
 				"tweets",
 				JSON.stringify({ text: payload?.text }),
 				accessToken,
 			);
 		case "userTweets":
-			ret = await client(
+			return await client(
 				METHODS.GET,
 				`users/${payload?.id}/tweets`,
 				null,
 				accessToken,
 			);
-			break;
 	}
 
-	return ret;
+	return {
+		status: 400,
+		error: "存在しないアクションです",
+	};
 }

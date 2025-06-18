@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { client, getMe } from "@/utils/client";
+import { action, client } from "@/utils/client";
 import mongo from "@/utils/db";
 import type { User } from "@/utils/Model";
 
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 		);
 	}
 
-	const user = await getMe(data.access_token);
+	const user = await action("me", data.access_token);
 	if (user.status === 429) {
 		errorRes.cookies.set(
 			"message",
