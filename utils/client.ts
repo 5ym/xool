@@ -1,6 +1,11 @@
 import mongo from "./db";
 import type { User } from "./Model";
 
+const METHODS = {
+	GET: "GET",
+	POST: "POST",
+};
+
 export async function client(
 	method: string,
 	url: string,
@@ -32,34 +37,18 @@ export async function client(
 	).json();
 }
 
-export async function getMe(bearer: string) {
-	return await client("GET", "users/me", null, bearer);
-}
-
-export async function postTweet(
-	bearer: string,
-	payload?: { text: string; media?: string },
-) {
-	return await client(
-		"POST",
-		"tweets",
-		JSON.stringify({ text: payload?.text }),
-		bearer,
-	);
-}
-
 export async function refreshToken(refreshToken: string) {
 	const params = new URLSearchParams({
 		refresh_token: refreshToken,
 		grant_type: "refresh_token",
 	});
-	return await client("POST", "oauth2/token", params.toString());
+	return await client(METHODS.POST, "oauth2/token", params.toString());
 }
 
 export async function autoAction(
 	type: string,
 	key: string,
-	payload?: { text: string; media?: string },
+	payload?: { text?: string; media?: string; id?: string },
 ) {
 	const collection = (await mongo()).collection<User>("user");
 	const existUser = await collection.findOne({ key: key });
@@ -87,7 +76,7 @@ export async function autoAction(
 async function action(
 	type: string,
 	accessToken: string,
-	payload?: { text: string; media?: string },
+	payload?: { text?: string; media?: string; id?: string },
 ) {
 	let ret:
 		| {
@@ -102,10 +91,23 @@ async function action(
 		| undefined;
 	switch (type) {
 		case "me":
-			ret = await getMe(accessToken);
+			ret = await client(METHODS.GET, "users/me", null, accessToken);
 			break;
 		case "tweet":
-			ret = await postTweet(accessToken, payload);
+			ret = await client(
+				METHODS.POST,
+				"tweets",
+				JSON.stringify({ text: payload?.text }),
+				accessToken,
+			);
+		case "userTweets":
+			ret = await client(
+				METHODS.GET,
+				`users/${payload?.id}/tweets`,
+				null,
+				accessToken,
+			);
+			break;
 	}
 
 	return ret;

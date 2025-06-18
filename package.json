@@ -1,36 +1,36 @@
 {
-	"name": "xool",
-	"version": "0.1.0",
-	"private": true,
-	"scripts": {
-		"dev": "next dev --turbopack",
-		"build": "next build",
-		"start": "next start",
-		"check": "biome check --write && tsc"
-	},
-	"dependencies": {
-		"hast-util-to-jsx-runtime": "^2.3.2",
-		"mongodb": "^6.12.0",
-		"next": "15.2.4",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
-		"sharp": "^0.33.5"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.0.0-beta.1",
-		"@tailwindcss/postcss": "^4",
-		"@tailwindcss/typography": "^0.5.15",
-		"@types/bun": "^1.1.14",
-		"@types/node": "^22",
-		"@types/react": "^19",
-		"@types/react-dom": "^19",
-		"daisyui": "^5.0.9",
-		"postcss": "^8",
-		"shiki": "^1.22.0",
-		"tailwindcss": "^4",
-		"typescript": "^5"
-	},
-	"trustedDependencies": [
-		"@biomejs/biome"
-	]
+  "name": "xool",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "check": "biome check --write && tsc",
+    "dev": "next dev --turbopack",
+    "start": "next start"
+  },
+  "dependencies": {
+    "hast-util-to-jsx-runtime": "^2.3.2",
+    "mongodb": "^6.12.0",
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.0.0",
+    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/bun": "^1.1.14",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "daisyui": "^5.0.9",
+    "shiki": "^1.22.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "trustedDependencies": [
+    "@tailwindcss/oxide",
+    "sharp"
+  ]
 }
