@@ -67,7 +67,8 @@ export default function Gallery({
 		<>
 			<div className="flex flex-wrap gap-3 overflow-x-hidden overflo-y-visible py-3">
 				{viewList.map((file) => (
-					// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+					// biome-ignore lint/a11y/noStaticElementInteractions: <そうは言っても使いたい>
+					// biome-ignore lint/a11y/useKeyWithClickEvents: <そうは言っても使いたい>
 					<div
 						key={file.name}
 						className="relative grow h-64 max-w-lg cursor-pointer rounded-lg overflow-hidden bg-primary-content hover:scale-105 transition-all"

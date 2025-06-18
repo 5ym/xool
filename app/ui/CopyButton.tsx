@@ -1,4 +1,4 @@
-import { type MouseEvent, useCallback, useContext, useState } from "react";
+import { type MouseEvent, useCallback, useContext } from "react";
 import { Context } from "./GlobalContext";
 
 export default function CopyButton({
