@@ -73,16 +73,17 @@ export async function autoAction(
 	return await action(type, accessToken, payload);
 }
 
-type ReturnType<T> = {
+type ReturnType<T, U = undefined> = {
 	status?: number;
 	error?: string;
 	data: T;
+	meta: U;
 };
 
 export async function action(
 	type: string,
 	accessToken: string,
-	payload?: { text?: string; media?: string; id?: string },
+	payload?: { text?: string; media?: string; id?: string; sinceId?: string },
 ) {
 	switch (type) {
 		case "me":
@@ -103,13 +104,29 @@ export async function action(
 				JSON.stringify({ text: payload?.text }),
 				accessToken,
 			);
-		case "userTweets":
-			return await client(
+		case "userTweets": {
+			const searchParams = new URLSearchParams({
+				max_results: "100",
+			});
+			if (payload?.sinceId) {
+				searchParams.append("since_id", payload.sinceId);
+			}
+			return (await client(
 				METHODS.GET,
-				`users/${payload?.id}/tweets`,
+				`users/${payload?.id}/tweets?${searchParams.toString()}`,
 				null,
 				accessToken,
-			);
+			)) as ReturnType<
+				{
+					id: string;
+					text: string;
+				}[],
+				{
+					newest_id: string;
+					oldest_id: string;
+				}
+			>;
+		}
 	}
 
 	return {
