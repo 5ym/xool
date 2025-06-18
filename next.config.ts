@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
 			bodySizeLimit: "100mb",
 		},
 	},
+	images: {
+		remotePatterns: [new URL("http://xool-web/images/**")],
+	},
 };
 
 export default nextConfig;

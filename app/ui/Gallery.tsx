@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { get } from "../lgtm/actions";
 import CopyButton from "./CopyButton";
@@ -67,21 +68,22 @@ export default function Gallery({
 		<>
 			<div className="flex flex-wrap gap-3 overflow-x-hidden overflo-y-visible py-3">
 				{viewList.map((file) => (
-					// biome-ignore lint/a11y/noStaticElementInteractions: <そうは言っても使いたい>
-					// biome-ignore lint/a11y/useKeyWithClickEvents: <そうは言っても使いたい>
-					<div
+					<button
 						key={file.name}
 						className="relative grow h-64 max-w-lg cursor-pointer rounded-lg overflow-hidden bg-primary-content hover:scale-105 transition-all"
 						onClick={() => onClickItem(file)}
+						type="button"
 					>
 						{file.isDeletable && <DeleteButton fileName={file.name} />}
 						<CopyButton fileName={file.name} />
-						<img
-							src={`/images/${file.name}`}
+						<Image
+							src={`http://xool-web/images/${file.name}`}
 							alt="LGTM"
 							className="h-full w-full object-cover"
+							width="960"
+							height="960"
 						/>
-					</div>
+					</button>
 				))}
 			</div>
 			<dialog ref={dialog} className="modal">
@@ -97,7 +99,12 @@ export default function Gallery({
 									onClick={closeDialog}
 									isVisible={false}
 								/>
-								<img src={`/images/${diaImage.name}`} alt="LGTM" />
+								<Image
+									src={`http://xool-web/images/${diaImage.name}`}
+									alt="LGTM"
+									width="960"
+									height="960"
+								/>
 							</>
 						) : (
 							<div className="skeleton h-full w-full" />

@@ -13,7 +13,7 @@ export async function create(files: FileList | null, userKey: string) {
 	}
 	const collection = (await mongo()).collection<LImage>("lImage");
 	for await (const file of files) {
-		const fileName = `${await generateKey()}.avif`;
+		const fileName = `${await generateKey()}.webp`;
 		const buffer = await sharp(await file.arrayBuffer(), { animated: true })
 			.resize({
 				width: 960,
@@ -21,7 +21,7 @@ export async function create(files: FileList | null, userKey: string) {
 				fit: "inside",
 			})
 			.rotate()
-			.avif({ quality: 80 })
+			.webp({ quality: 80 })
 			.toBuffer();
 		const image = sharp(buffer);
 		const metadata = await image.metadata();
@@ -61,7 +61,7 @@ export async function deleteFile(fileName: string) {
 
 async function generateKey() {
 	const key = crypto.randomUUID();
-	const existFile = Bun.file(`images/${key}.avif`);
+	const existFile = Bun.file(`images/${key}.webp`);
 	if (await existFile.exists()) return await generateKey();
 	return key;
 }
