@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
 		},
 	},
 	images: {
+		dangerouslyAllowLocalIP: true,
 		remotePatterns: [new URL("http://xool-web/images/**")],
 	},
 };
