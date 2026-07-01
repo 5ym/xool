@@ -14,10 +14,13 @@ docker-production-build:
     - main
 
 update-production:
-  image: curlimages/curl
+  image: bitnami/kubectl:latest
   stage: deploy
+  before_script:
+    - export KUBECONFIG="$KUBECONFIG_FILE"
   script:
-    - curl -X POST $PORTAINER
+    - kubectl apply -f /home/ruk/k3s/blog/deployment.yaml
+    - kubectl rollout status deployment/blog -n blog --timeout=120s
   only:
     - main
 
