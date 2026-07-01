@@ -4,23 +4,24 @@ stages:
 
 build-image:
   stage: build
-  image: moby/buildkit:rootless
+  image: moby/buildkit:v0.14.1-rootless
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   before_script:
-    - echo "$CI_REGISTRY_PASSWORD" | buildctl-daemonless.sh login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
+    - mkdir -p "$HOME/.docker"
+    - AUTH="$(printf '%s:%s' "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | base64 | tr -d '\n')"
+    - printf '{"auths":{"%s":{"auth":"%s"}}}\n' "$CI_REGISTRY" "$AUTH" > "$HOME/.docker/config.json"
   script:
-    - buildctl-daemonless.sh build \
+    - |
+      buildctl-daemonless.sh build \
         --frontend dockerfile.v0 \
         --local context=. \
         --local dockerfile=. \
-        --output type=image,name="$CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG",push=true
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-    - when: on_success
+        --output type=image,name="$CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG",push=true \
+        --output type=image,name="$CI_REGISTRY_IMAGE/app:latest",push=true
 
 update-production:
-  image: bitnami/kubectl:latest
+  image: bitnami/kubectl:1.30.3
   stage: deploy
   before_script:
     - export KUBECONFIG="$KUBECONFIG_FILE"
@@ -29,17 +30,3 @@ update-production:
     - kubectl rollout status deployment/blog -n blog --timeout=120s
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-
-build-image-branch:
-  stage: build
-  image: moby/buildkit:rootless
-  variables:
-    BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
-  script:
-    - buildctl-daemonless.sh build \
-        --frontend dockerfile.v0 \
-        --local context=. \
-        --local dockerfile=. \
-        --output type=image,name="$CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG",push=true
-  rules:
-    - if: '$CI_COMMIT_BRANCH != "main"'
