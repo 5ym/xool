@@ -17,7 +17,7 @@ build-image:
         --frontend dockerfile.v0 \
         --local context=. \
         --local dockerfile=. \
-        --output type=image,name="$CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG",push=true \
+        --output type=image,name="$CI_REGISTRY_IMAGE/app:$CI_COMMIT_SHA",push=true \
         --output type=image,name="$CI_REGISTRY_IMAGE/app:latest",push=true
 
 update-production:
