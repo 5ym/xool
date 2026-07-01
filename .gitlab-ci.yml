@@ -1,17 +1,23 @@
-default:
-  image: docker:latest
-  services:
-    - docker:dind
+stages:
+  - build
+  - deploy
 
-docker-production-build:
+build-image:
   stage: build
+  image: moby/buildkit:rootless
+  variables:
+    BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   before_script:
-    - echo $CI_REGISTRY_PASSWORD | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
+    - echo "$CI_REGISTRY_PASSWORD" | buildctl-daemonless.sh login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
   script:
-    - docker build -t "$CI_REGISTRY_IMAGE/app" .
-    - docker push "$CI_REGISTRY_IMAGE/app"
-  only:
-    - main
+    - buildctl-daemonless.sh build \
+        --frontend dockerfile.v0 \
+        --local context=. \
+        --local dockerfile=. \
+        --output type=image,name="$CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG",push=true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - when: on_success
 
 update-production:
   image: bitnami/kubectl:latest
@@ -21,15 +27,19 @@ update-production:
   script:
     - kubectl apply -f /home/ruk/k3s/blog/deployment.yaml
     - kubectl rollout status deployment/blog -n blog --timeout=120s
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
-docker-build:
+build-image-branch:
   stage: build
-  before_script:
-    - echo $CI_REGISTRY_PASSWORD | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
+  image: moby/buildkit:rootless
+  variables:
+    BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   script:
-    - docker build -t "$CI_REGISTRY_IMAGE/app:$CI_COMMIT_BRANCH" .
-    - docker push "$CI_REGISTRY_IMAGE/app:$CI_COMMIT_BRANCH"
-  except:
-    - main
+    - buildctl-daemonless.sh build \
+        --frontend dockerfile.v0 \
+        --local context=. \
+        --local dockerfile=. \
+        --output type=image,name="$CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_SLUG",push=true
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "main"'
