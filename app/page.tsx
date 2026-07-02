@@ -151,16 +151,7 @@ async function KeyInfo(props: { wkey: string }) {
 						</div>
 					)}
 					<h3>
-						別のアカウントを使用する場合は
-						<a
-							className="link link-primary"
-							target="_blank"
-							href="https://x.com"
-							rel="noreferrer"
-						>
-							𝕏
-						</a>
-						側でアカウントを切り替えてから下記で再ログイン
+						別のアカウントを使用する場合は下記で認証画面内でアカウント選択できます
 					</h3>
 				</>
 			)}
