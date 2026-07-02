@@ -1,8 +1,6 @@
 build-image:
   stage: build
   image: moby/buildkit:rootless
-  variables:
-    BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   before_script:
     - mkdir -p "$HOME/.docker"
     - AUTH="$(printf '%s:%s' "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | base64 | tr -d '\n')"
