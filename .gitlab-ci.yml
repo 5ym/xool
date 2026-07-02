@@ -1,10 +1,6 @@
-stages:
-  - build
-  - deploy
-
 build-image:
   stage: build
-  image: moby/buildkit:v0.14.1-rootless
+  image: moby/buildkit:rootless
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   before_script:
@@ -17,16 +13,21 @@ build-image:
         --frontend dockerfile.v0 \
         --local context=. \
         --local dockerfile=. \
-        --output type=image,name="$CI_REGISTRY_IMAGE/app:$CI_COMMIT_SHA",push=true \
-        --output type=image,name="$CI_REGISTRY_IMAGE/app:latest",push=true
+        --opt filename=Dockerfile \
+        --output type=image,name=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA,push=true \
+        --output type=image,name=$CI_REGISTRY_IMAGE:latest,push=true
 
 update-production:
-  image: bitnami/kubectl:1.30.3
+  image: bitnami/kubectl
   stage: deploy
+  variables:
+    TARGET_NAMESPACE: xool
+    TARGET_DEPLOYMENT: xool
+    K8S_SERVER: https://g.doany.io:6443
   before_script:
-    - export KUBECONFIG="$KUBECONFIG_FILE"
+    - printf '%s' "$K8S_CA_B64" | base64 -d > /tmp/k8s-ca.crt
   script:
-    - kubectl apply -f /home/ruk/k3s/blog/deployment.yaml
-    - kubectl rollout status deployment/blog -n blog --timeout=120s
+    - kubectl --server="$K8S_SERVER" --certificate-authority=/tmp/k8s-ca.crt --token="$WEBHOOK_K8S_TOKEN" -n "$TARGET_NAMESPACE" rollout restart deployment/"$TARGET_DEPLOYMENT"
+    - kubectl --server="$K8S_SERVER" --certificate-authority=/tmp/k8s-ca.crt --token="$WEBHOOK_K8S_TOKEN" -n "$TARGET_NAMESPACE" rollout status deployment/"$TARGET_DEPLOYMENT" --timeout=120s
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
