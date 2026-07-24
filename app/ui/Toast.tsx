@@ -5,15 +5,19 @@ import { Context } from "./GlobalContext";
 
 export default function Toast() {
 	const { message, setMessage } = useContext(Context);
-	const [messageList, setMessageList] = useState<string[]>([]);
+	const [messageList, setMessageList] = useState<
+		{ id: number; text: string }[]
+	>([]);
 	const [isShow, setIsShow] = useState(true);
 	const showTimeout = useRef<Timer>(null);
 	const messageTimeout = useRef<Timer>(null);
+	const nextId = useRef(0);
 
 	useEffect(() => {
 		if (message && setMessage) {
 			setIsShow(true);
-			setMessageList([message, ...messageList]);
+			nextId.current += 1;
+			setMessageList([{ id: nextId.current, text: message }, ...messageList]);
 			setMessage("");
 			if (showTimeout.current) clearTimeout(showTimeout.current);
 			if (messageTimeout.current) clearTimeout(messageTimeout.current);
@@ -28,9 +32,9 @@ export default function Toast() {
 
 	return (
 		<div className={`toast transition-all ${isShow ? "" : "opacity-0"}`}>
-			{messageList.map((mes, i) => (
-				<div key={i + mes} className="alert alert-info">
-					<span>{mes}</span>
+			{messageList.map((mes) => (
+				<div key={mes.id} className="alert alert-info">
+					<span>{mes.text}</span>
 				</div>
 			))}
 		</div>

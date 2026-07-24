@@ -54,23 +54,21 @@ export default function Upload({ userKey }: { userKey: string }) {
 	}, [router, setMessage, userKey]);
 
 	return (
-		<>
-			<div>
-				<input
-					ref={inputRef}
-					accept="image/*"
-					type="file"
-					className="file-input w-full max-w-xs"
-					disabled={isGenerating}
-					multiple
-				/>
-				{isGenerating && (
-					<>
-						<progress className="progress w-52 ml-4" />
-						<span className="ml-4">画像生成中</span>
-					</>
-				)}
-			</div>
-		</>
+		<div>
+			<input
+				ref={inputRef}
+				accept="image/*"
+				type="file"
+				className="file-input w-full max-w-xs"
+				disabled={isGenerating}
+				multiple
+			/>
+			{isGenerating && (
+				<>
+					<progress className="progress w-52 ml-4" />
+					<span className="ml-4">画像生成中</span>
+				</>
+			)}
+		</div>
 	);
 }
