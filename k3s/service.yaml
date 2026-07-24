@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: xool
+  namespace: xool
+spec:
+  selector:
+    app: xool
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xool-web
+  namespace: xool
+spec:
+  selector:
+    app: xool-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: xool
+spec:
+  selector:
+    app: db
+  ports:
+    - name: mongo
+      port: 27017
+      targetPort: 27017

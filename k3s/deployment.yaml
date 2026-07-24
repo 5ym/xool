@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xool
+  namespace: xool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xool
+  template:
+    metadata:
+      labels:
+        app: xool
+    spec:
+      containers:
+        - name: xool
+          image: ghcr.io/5ym/xool:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            - name: HOST
+              value: x.doany.io
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: xool-secrets
+                  key: client-id
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: xool-secrets
+                  key: client-secret
+            - name: HASH
+              valueFrom:
+                secretKeyRef:
+                  name: xool-secrets
+                  key: hash
+          volumeMounts:
+            - name: xool-images
+              mountPath: /usr/src/app/images
+      volumes:
+        - name: xool-images
+          persistentVolumeClaim:
+            claimName: xool-images
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xool-web
+  namespace: xool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xool-web
+  template:
+    metadata:
+      labels:
+        app: xool-web
+    spec:
+      containers:
+        - name: xool-web
+          image: nginx:stable
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: xool-images
+              mountPath: /usr/share/nginx/html/images
+      volumes:
+        - name: xool-images
+          persistentVolumeClaim:
+            claimName: xool-images
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: xool
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: db
+          image: mongo:6
+          args:
+            - --setParameter
+            - diagnosticDataCollectionDirectorySizeMB=50
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: toor
+            - name: MONGO_INITDB_DATABASE
+              value: xool
+          volumeMounts:
+            - name: xool-db
+              mountPath: /data/db
+      volumes:
+        - name: xool-db
+          persistentVolumeClaim:
+            claimName: xool-db
