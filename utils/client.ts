@@ -1,37 +1,30 @@
 import mongo from "./db";
 import type { User } from "./Model";
 
-const METHODS = {
-	GET: "GET",
-	POST: "POST",
-};
-
 export async function client(
 	method: string,
 	url: string,
 	body: string | null,
 	bearer = "",
 ) {
-	let headers: Record<string, string>;
-	if (bearer === "") {
-		headers = {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Authorization: `Basic ${Buffer.from(
-				`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`,
-			).toString("base64")}`,
-		};
-	} else {
-		headers = {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${bearer}`,
-		};
-	}
+	const headers =
+		bearer === ""
+			? {
+					"Content-Type": "application/x-www-form-urlencoded",
+					Authorization: `Basic ${Buffer.from(
+						`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`,
+					).toString("base64")}`,
+				}
+			: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${bearer}`,
+				};
 
 	return await (
 		await fetch(`https://api.x.com/2/${url}`, {
-			method: method,
-			headers: headers,
-			body: body,
+			method,
+			headers,
+			body,
 			cache: "no-store",
 		})
 	).json();
@@ -42,7 +35,7 @@ export async function refreshToken(refreshToken: string) {
 		refresh_token: refreshToken,
 		grant_type: "refresh_token",
 	});
-	return await client(METHODS.POST, "oauth2/token", params.toString());
+	return await client("POST", "oauth2/token", params.toString());
 }
 
 export async function autoAction(
@@ -51,7 +44,7 @@ export async function autoAction(
 	payload?: { text?: string; media?: string; id?: string },
 ) {
 	const collection = (await mongo()).collection<User>("user");
-	const existUser = await collection.findOne({ key: key });
+	const existUser = await collection.findOne({ key });
 	if (existUser === null)
 		return { error: "keyが無効です再ログインしてください" };
 	let accessToken = existUser.accessToken;
@@ -65,7 +58,7 @@ export async function autoAction(
 		{ _id: existUser._id },
 		{
 			$set: {
-				accessToken: accessToken,
+				accessToken,
 				refreshToken: refreshedToken.refresh_token,
 			},
 		},
@@ -88,7 +81,7 @@ export async function action(
 	switch (type) {
 		case "me":
 			return (await client(
-				METHODS.GET,
+				"GET",
 				"users/me",
 				null,
 				accessToken,
@@ -99,7 +92,7 @@ export async function action(
 			}>;
 		case "tweet":
 			return await client(
-				METHODS.POST,
+				"POST",
 				"tweets",
 				JSON.stringify({ text: payload?.text }),
 				accessToken,
@@ -112,7 +105,7 @@ export async function action(
 				searchParams.append("since_id", payload.sinceId);
 			}
 			return (await client(
-				METHODS.GET,
+				"GET",
 				`users/${payload?.id}/tweets?${searchParams.toString()}`,
 				null,
 				accessToken,

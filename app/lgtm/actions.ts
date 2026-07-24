@@ -1,9 +1,9 @@
 "use server";
 
 import { unlinkSync } from "node:fs";
-import type { FindCursor, WithId } from "mongodb";
 import sharp from "sharp";
 import mongo from "@/utils/db";
+import { generateUniqueKey } from "@/utils/key";
 import type { LImage } from "@/utils/Model";
 import type { File } from "../ui/Gallery";
 
@@ -12,8 +12,9 @@ export async function create(files: FileList | null, userKey: string) {
 		return;
 	}
 	const collection = (await mongo()).collection<LImage>("lImage");
+	const lgtmSource = await Bun.file("public/lgtm.webp").arrayBuffer();
 	for await (const file of files) {
-		const fileName = `${await generateKey()}.webp`;
+		const fileName = `${await generateUniqueKey((k) => Bun.file(`images/${k}.webp`).exists())}.webp`;
 		const buffer = await sharp(await file.arrayBuffer(), { animated: true })
 			.resize({
 				width: 960,
@@ -25,7 +26,7 @@ export async function create(files: FileList | null, userKey: string) {
 			.toBuffer();
 		const image = sharp(buffer);
 		const metadata = await image.metadata();
-		const lgtm = await sharp("public/lgtm.webp")
+		const lgtm = await sharp(lgtmSource)
 			.resize({
 				width: metadata.width,
 				height: metadata.height,
@@ -44,27 +45,15 @@ export async function create(files: FileList | null, userKey: string) {
 				},
 			])
 			.toFile(`images/${fileName}`);
-		collection.insertOne({
-			fileName: fileName,
-			userKey: userKey,
-			createdAt: new Date(),
-		});
+		collection.insertOne({ fileName, userKey, createdAt: new Date() });
 	}
 }
 
 export async function deleteFile(fileName: string) {
-	await (await mongo()).collection<LImage>("lImage").deleteOne({
-		fileName: fileName,
-	});
+	await (await mongo()).collection<LImage>("lImage").deleteOne({ fileName });
 	unlinkSync(`images/${fileName}`);
 }
 
-async function generateKey() {
-	const key = crypto.randomUUID();
-	const existFile = Bun.file(`images/${key}.webp`);
-	if (await existFile.exists()) return await generateKey();
-	return key;
-}
 export async function get(
 	page: number,
 	find: boolean,
@@ -72,12 +61,9 @@ export async function get(
 ): Promise<File[]> {
 	const perPage = 30;
 	const imageCollection = (await mongo()).collection<LImage>("lImage");
-	let list: FindCursor<WithId<LImage>>;
-	if (find) {
-		list = imageCollection.find({ userKey: userKey });
-	} else {
-		list = imageCollection.find();
-	}
+	const list = find
+		? imageCollection.find({ userKey })
+		: imageCollection.find();
 	const array = await list
 		.sort({
 			createdAt: -1,

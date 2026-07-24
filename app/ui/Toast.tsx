@@ -14,7 +14,7 @@ export default function Toast() {
 	const nextId = useRef(0);
 
 	useEffect(() => {
-		if (message && setMessage) {
+		if (message) {
 			setIsShow(true);
 			nextId.current += 1;
 			setMessageList([{ id: nextId.current, text: message }, ...messageList]);

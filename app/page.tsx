@@ -1,8 +1,31 @@
 import { cookies } from "next/headers";
-import Link from "next/link";
-import { Suspense } from "react";
+import { type ReactNode, Suspense } from "react";
 import CodeBlock from "@/app/ui/CodeBlock";
+import SignInButton from "@/app/ui/SignInButton";
 import { autoAction } from "@/utils/client";
+import { HOST_URL } from "@/utils/env";
+
+function ErrorAlert({ children }: { children: ReactNode }) {
+	return (
+		<div role="alert" className="alert alert-error mb-4">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				className="h-6 w-6 shrink-0 stroke-current"
+				fill="none"
+				viewBox="0 0 24 24"
+			>
+				<title>Danger</title>
+				<path
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					strokeWidth="2"
+					d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+				/>
+			</svg>
+			<span>{children}</span>
+		</div>
+	);
+}
 
 export default async function Page() {
 	const cookieStore = await cookies();
@@ -12,23 +35,7 @@ export default async function Page() {
 		<div className="mx-auto p-4 prose">
 			<p>Webhookで𝕏にポストをできるようにするウェブアプリケーションです</p>
 			{message !== undefined ? (
-				<div role="alert" className="alert alert-error mb-4">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="h-6 w-6 shrink-0 stroke-current"
-						fill="none"
-						viewBox="0 0 24 24"
-					>
-						<title>Danger</title>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="2"
-							d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
-					<span>{message}</span>
-				</div>
+				<ErrorAlert>{message}</ErrorAlert>
 			) : (
 				wkey !== undefined && (
 					<Suspense
@@ -46,10 +53,7 @@ export default async function Page() {
 					</Suspense>
 				)
 			)}
-			<Link href="/api/oauth" className="text-white bg-black btn">
-				<span>Sign in with</span>
-				<span className="text-2xl">𝕏</span>
-			</Link>
+			<SignInButton />
 			<h3>プライバシー</h3>
 			<p>
 				Webhookを作成するにあたってUser ID, Access Token, Refresh
@@ -87,29 +91,13 @@ async function KeyInfo(props: { wkey: string }) {
 	return (
 		<>
 			{keyError ? (
-				<div role="alert" className="alert alert-error mb-4">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="h-6 w-6 shrink-0 stroke-current"
-						fill="none"
-						viewBox="0 0 24 24"
-					>
-						<title>Danger</title>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="2"
-							d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
-					<span>{keyError}</span>
-				</div>
+				<ErrorAlert>{keyError}</ErrorAlert>
 			) : (
 				<>
 					<h3>curlサンプル</h3>
 					<CodeBlock
 						lang="sh"
-						code={`curl \\\n\t--location 'https://${process.env.HOST}/api/tweets' \\\n\t--header 'Content-Type: application/json' \\\n\t--data '{"key": "${props.wkey}","text": "example"}'`}
+						code={`curl \\\n\t--location '${HOST_URL}/api/tweets' \\\n\t--header 'Content-Type: application/json' \\\n\t--data '{"key": "${props.wkey}","text": "example"}'`}
 					/>
 					<h3>現在のアカウント</h3>
 					{ret?.status === 429 ? (

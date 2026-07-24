@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
-import Link from "next/link";
 import mongo from "@/utils/db";
 import type { User } from "@/utils/Model";
 import Gallery from "../ui/Gallery";
+import SignInButton from "../ui/SignInButton";
 import Upload from "../ui/Upload";
 import { get } from "./actions";
 
@@ -25,13 +25,7 @@ export default async function Page() {
 				) : (
 					<>
 						<p>作成機能を利用するにはログインしてください</p>
-						<Link
-							href="/api/oauth?redirect=lgtm"
-							className="text-white bg-black btn"
-						>
-							<span>Sign in with</span>
-							<span className="text-2xl">𝕏</span>
-						</Link>
+						<SignInButton redirect="lgtm" />
 					</>
 				)}
 			</div>

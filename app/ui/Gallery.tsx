@@ -11,6 +11,8 @@ export type File = {
 	isDeletable: boolean;
 };
 
+const imageUrl = (name: string) => `http://xool-web/images/${name}`;
+
 export default function Gallery({
 	fileNameList,
 	userKey,
@@ -29,7 +31,7 @@ export default function Gallery({
 	const closeDialog = () => {
 		dialog.current?.close();
 	};
-	const [isGetting, setIsGetting] = useState<boolean>(false);
+	const [isGetting, setIsGetting] = useState(false);
 	const [list, setList] = useState<File[]>([]);
 	const viewList = useMemo(
 		() => [...fileNameList, ...list],
@@ -40,7 +42,7 @@ export default function Gallery({
 		if (
 			document.body.scrollHeight - (window.innerHeight + window.scrollY) <
 				300 &&
-			isGetting === false
+			!isGetting
 		) {
 			setIsGetting(true);
 			const pageList = await get(page, find, userKey);
@@ -77,7 +79,7 @@ export default function Gallery({
 						{file.isDeletable && <DeleteButton fileName={file.name} />}
 						<CopyButton fileName={file.name} />
 						<Image
-							src={`http://xool-web/images/${file.name}`}
+							src={imageUrl(file.name)}
 							alt="LGTM"
 							className="h-full w-full object-cover"
 							width="960"
@@ -100,7 +102,7 @@ export default function Gallery({
 									isVisible={false}
 								/>
 								<Image
-									src={`http://xool-web/images/${diaImage.name}`}
+									src={imageUrl(diaImage.name)}
 									alt="LGTM"
 									width="960"
 									height="960"
