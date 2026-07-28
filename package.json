@@ -34,6 +34,6 @@
 		"sharp"
 	],
 	"overrides": {
-		"bson": "7.2.0"
+		"bson": "7.3.1"
 	}
 }
