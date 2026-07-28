@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
 		serverActions: {
 			bodySizeLimit: "100mb",
 		},
+		useTypeScriptCli: true,
 	},
 	images: {
 		dangerouslyAllowLocalIP: true,
