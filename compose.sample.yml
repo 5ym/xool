@@ -30,7 +30,7 @@ services:
       - "traefik.http.routers.xool-web.tls=true"
 
   db:
-    image: mongo:8
+    image: mongo:7
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=toor
