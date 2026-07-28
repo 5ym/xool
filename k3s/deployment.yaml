@@ -91,7 +91,7 @@ spec:
     spec:
       containers:
         - name: db
-          image: mongo:7
+          image: mongo:8
           args:
             - --setParameter
             - diagnosticDataCollectionDirectorySizeMB=50
