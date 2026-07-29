@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: xool
-          image: ghcr.io/danything/xool:d31f09acc2301fc6d6364a9a6529c62a2c51478f
+          image: ghcr.io/danything/xool:b0af2b32f0082a8b94258baeed532c778beeae4e
           ports:
             - containerPort: 3000
           env:
