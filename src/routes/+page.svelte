@@ -92,7 +92,7 @@ let { data }: PageProps = $props();
 	<a
 		class="link link-primary"
 		target="_blank"
-		href="https://g.doany.io/5ym/tweel"
+		href="https://github.com/DAnything/xool"
 		rel="noreferrer"
 	>
 		ソースコード
