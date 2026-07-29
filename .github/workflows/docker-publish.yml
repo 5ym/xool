@@ -48,14 +48,15 @@ jobs:
           if ! git diff --quiet -- k3s/deployment.yaml; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            branch="bump-xool-image-${GITHUB_SHA::7}"
+            branch="bump-xool-image"
             git checkout -b "$branch"
             git add k3s/deployment.yaml
             git commit -m "chore: update xool image to ${GITHUB_SHA}"
-            git push origin "$branch"
-            gh pr create --base main --head "$branch" \
-              --title "chore: update xool image to ${GITHUB_SHA::7}" \
-              --body "Automated image tag bump for commit ${GITHUB_SHA}. Merge to deploy."
+            git push --force origin "$branch"
+            title="chore: update xool image to ${GITHUB_SHA::7}"
+            body="Automated image tag bump for commit ${GITHUB_SHA}. Merge to deploy."
+            gh pr create --base main --head "$branch" --title "$title" --body "$body" \
+              || gh pr edit "$branch" --title "$title" --body "$body"
           fi
         env:
           REGISTRY: ${{ env.REGISTRY }}
