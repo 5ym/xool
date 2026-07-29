@@ -9,7 +9,7 @@ services:
       - docker_default
       - default
     environment:
-      - HOST=x.localhost
+      - ORIGIN=https://x.localhost
       - CLIENT_ID=
       - CLIENT_SECRET=
       - HASH=

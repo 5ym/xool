@@ -1,0 +1,13 @@
+@import "@fontsource/biz-udpgothic/japanese-400.css";
+@import "@fontsource/biz-udpgothic/japanese-700.css";
+@import "@fontsource/biz-udpmincho/japanese-400.css";
+@import "@fontsource/biz-udpmincho/japanese-700.css";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "daisyui";
+
+@theme {
+	--font-sans: "BIZ UDPGothic", sans-serif;
+	--font-serif: "BIZ UDPMincho", serif;
+	--font-mono: MesloLGS NF;
+}

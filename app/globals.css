@@ -1,9 +1,0 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
-@plugin "daisyui";
-
-@theme {
-	--font-sans: BIZ UDPGothic, var(--font-gothic);
-	--font-serif: BIZ UDPMincho, var(--font-mincho);
-	--font-mono: MesloLGS NF;
-}

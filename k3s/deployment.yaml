@@ -19,10 +19,8 @@ spec:
           ports:
             - containerPort: 3000
           env:
-            - name: HOSTNAME
-              value: "0.0.0.0"
-            - name: HOST
-              value: x.doany.io
+            - name: ORIGIN
+              value: https://x.doany.io
             - name: CLIENT_ID
               valueFrom:
                 secretKeyRef:
