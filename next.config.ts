@@ -14,10 +14,6 @@ const nextConfig: NextConfig = {
 		},
 		useTypeScriptCli: true,
 	},
-	images: {
-		dangerouslyAllowLocalIP: true,
-		remotePatterns: [new URL("http://xool-web/images/**")],
-	},
 };
 
 export default nextConfig;

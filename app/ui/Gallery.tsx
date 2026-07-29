@@ -11,7 +11,7 @@ export type File = {
 	isDeletable: boolean;
 };
 
-const imageUrl = (name: string) => `http://xool-web/images/${name}`;
+const imageUrl = (name: string) => `/images/${name}`;
 
 export default function Gallery({
 	fileNameList,

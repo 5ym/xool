@@ -19,9 +19,9 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: xool-web
+                name: xool
                 port:
-                  number: 80
+                  number: 3000
           - path: /
             pathType: Prefix
             backend:
