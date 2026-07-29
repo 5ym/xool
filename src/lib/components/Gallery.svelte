@@ -16,7 +16,9 @@ export type File = { name: string; isDeletable: boolean };
 		find: boolean;
 	} = $props();
 
-	let items = $state<File[]>([]);
+	// Seeds SSR output with the initial page; the $effect below only
+	// re-syncs on later prop changes (e.g. switching tabs), client-side.
+	let items = $state<File[]>(fileNameList);
 	let page = $state(2);
 	let isGetting = $state(false);
 	let diaImage = $state<File>();
