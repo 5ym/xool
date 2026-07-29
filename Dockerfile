@@ -10,6 +10,7 @@ COPY . .
 RUN bun run build
 
 FROM base
+RUN mkdir -p data && chown bun:bun data
 USER bun
 COPY --from=builder --chown=bun:bun /usr/src/app/.next/standalone .
 COPY --from=builder --chown=bun:bun /usr/src/app/.next/static .next/static

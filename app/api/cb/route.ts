@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { action, client } from "@/utils/client";
-import mongo from "@/utils/db";
+import db from "@/utils/db";
 import { HOST_URL } from "@/utils/env";
 import { generateUniqueKey } from "@/utils/key";
 import type { User } from "@/utils/Model";
@@ -33,31 +33,27 @@ export async function GET(request: Request) {
 		);
 		return errorRes;
 	}
-	const collection = (await mongo()).collection<User>("user");
-	const existUser = await collection.findOne({ socialId: user.data.id });
+	const existUser = db()
+		.query<User, [string]>("SELECT * FROM user WHERE socialId = ?")
+		.get(user.data.id);
 	const successRes = NextResponse.redirect(`${HOST_URL}/${redirect}`);
 	if (existUser !== null) {
-		await collection.updateOne(
-			{ socialId: user.data.id },
-			{
-				$set: {
-					accessToken: data.access_token,
-					refreshToken: data.refresh_token,
-				},
-			},
+		db().run(
+			"UPDATE user SET accessToken = ?, refreshToken = ? WHERE socialId = ?",
+			[data.access_token, data.refresh_token, user.data.id],
 		);
 		successRes.cookies.set("key", existUser.key, { maxAge: 1209600 });
 		return successRes;
 	}
 	const key = await generateUniqueKey(
-		async (k) => (await collection.findOne({ key: k })) !== null,
+		async (k) =>
+			db().query<User, [string]>("SELECT * FROM user WHERE key = ?").get(k) !==
+			null,
 	);
-	collection.insertOne({
-		accessToken: data.access_token,
-		refreshToken: data.refresh_token,
-		key,
-		socialId: user.data.id,
-	});
+	db().run(
+		"INSERT INTO user (key, socialId, accessToken, refreshToken) VALUES (?, ?, ?, ?)",
+		[key, user.data.id, data.access_token, data.refresh_token],
+	);
 	successRes.cookies.set("key", key, { maxAge: 1209600 });
 
 	return successRes;

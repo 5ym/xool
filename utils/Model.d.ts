@@ -5,7 +5,8 @@ export interface User {
 	socialId: string;
 }
 export interface LImage {
+	id: number;
 	fileName: string;
 	userKey: string;
-	createdAt: Date;
+	createdAt: number;
 }

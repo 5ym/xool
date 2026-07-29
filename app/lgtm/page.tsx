@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import mongo from "@/utils/db";
+import db from "@/utils/db";
 import type { User } from "@/utils/Model";
 import Gallery from "../ui/Gallery";
 import SignInButton from "../ui/SignInButton";
@@ -9,8 +9,9 @@ import { get } from "./actions";
 export default async function Page() {
 	const cookieStore = await cookies();
 	const wkey = cookieStore.get("key")?.value;
-	const userCollection = (await mongo()).collection<User>("user");
-	const existUser = await userCollection.findOne({ key: wkey });
+	const existUser = wkey
+		? db().query<User, [string]>("SELECT * FROM user WHERE key = ?").get(wkey)
+		: null;
 
 	return (
 		<>

@@ -1,4 +1,4 @@
-import mongo from "./db";
+import db from "./db";
 import type { User } from "./Model";
 
 export async function client(
@@ -43,8 +43,9 @@ export async function autoAction(
 	key: string,
 	payload?: { text?: string; media?: string; id?: string },
 ) {
-	const collection = (await mongo()).collection<User>("user");
-	const existUser = await collection.findOne({ key });
+	const existUser = db()
+		.query<User, [string]>("SELECT * FROM user WHERE key = ?")
+		.get(key);
 	if (existUser === null)
 		return { error: "keyが無効です再ログインしてください" };
 	let accessToken = existUser.accessToken;
@@ -54,15 +55,11 @@ export async function autoAction(
 	if (refreshedToken.error === "invalid_request")
 		return { error: "再認証してください" };
 	accessToken = refreshedToken.access_token;
-	await collection.updateOne(
-		{ _id: existUser._id },
-		{
-			$set: {
-				accessToken,
-				refreshToken: refreshedToken.refresh_token,
-			},
-		},
-	);
+	db().run("UPDATE user SET accessToken = ?, refreshToken = ? WHERE key = ?", [
+		accessToken,
+		refreshedToken.refresh_token,
+		key,
+	]);
 	return await action(type, accessToken, payload);
 }
 

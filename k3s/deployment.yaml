@@ -41,10 +41,15 @@ spec:
           volumeMounts:
             - name: xool-images
               mountPath: /usr/src/app/images
+            - name: xool-db
+              mountPath: /usr/src/app/data
       volumes:
         - name: xool-images
           persistentVolumeClaim:
             claimName: xool-images
+        - name: xool-db
+          persistentVolumeClaim:
+            claimName: xool-db
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -73,41 +78,3 @@ spec:
         - name: xool-images
           persistentVolumeClaim:
             claimName: xool-images
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: db
-  namespace: xool
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: db
-  template:
-    metadata:
-      labels:
-        app: db
-    spec:
-      containers:
-        - name: db
-          image: mongo:8.0
-          args:
-            - --setParameter
-            - diagnosticDataCollectionDirectorySizeMB=50
-          ports:
-            - containerPort: 27017
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: root
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: toor
-            - name: MONGO_INITDB_DATABASE
-              value: xool
-          volumeMounts:
-            - name: xool-db
-              mountPath: /data/db
-      volumes:
-        - name: xool-db
-          persistentVolumeClaim:
-            claimName: xool-db
