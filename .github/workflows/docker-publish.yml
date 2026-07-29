@@ -3,6 +3,10 @@ name: Build and Push Docker Image
 on:
   push:
     branches: [main]
+    # Merging the bot's own image-bump PR only touches k3s/, so ignoring it
+    # here stops the build -> bump PR -> merge -> build loop.
+    paths-ignore:
+      - 'k3s/**'
   workflow_dispatch:
 
 env:

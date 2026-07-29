@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # The bot's image-bump PRs only touch k3s/, so there is nothing to build.
+    # Skipping at the job level (not via paths-ignore) still reports the
+    # required "build" check, so the PR stays mergeable.
+    if: github.event.pull_request.user.login != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v7
 
