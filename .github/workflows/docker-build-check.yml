@@ -20,5 +20,8 @@ jobs:
         with:
           context: .
           push: false
+          # PR-scoped cache is only readable by later pushes to the same PR
+          # (main can't read it), so keep it small with mode=min and leave the
+          # 10GB repo budget for main's mode=max cache that every PR reads.
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
