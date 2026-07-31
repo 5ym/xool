@@ -5,6 +5,18 @@ metadata:
   namespace: xool
 spec:
   replicas: 1
+  # Bring the replacement up and let it pass its readiness probe before the old
+  # pod goes away, so the site never drops to zero serving pods. The images and
+  # database PVCs are ReadWriteOnce, but local-path pins them to a node and the
+  # scheduler follows, so both pods land there and can mount them together.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  # Hold the new pod ready for a moment before retiring the old one, so a pod
+  # that starts and immediately falls over doesn't take the old one with it.
+  minReadySeconds: 10
   selector:
     matchLabels:
       app: xool
@@ -13,14 +25,45 @@ spec:
       labels:
         app: xool
     spec:
+      # preStop (5s) + the adapter's SHUTDOWN_TIMEOUT (30s), with room to spare.
+      terminationGracePeriodSeconds: 45
       containers:
         - name: xool
           image: ghcr.io/danything/xool:0380d0771dd3f15463636bd1fd1ffff0c4054571
           ports:
             - containerPort: 3000
+          # Endpoint removal and SIGTERM race each other. Sleeping first lets
+          # Traefik stop routing here before the server stops accepting, so
+          # in-flight clicks aren't answered with a connection reset.
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "5"]
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            periodSeconds: 5
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            periodSeconds: 10
+            failureThreshold: 6
           env:
             - name: ORIGIN
               value: https://x.doany.io
+            # Finish serving in-flight requests before exiting; must stay under
+            # terminationGracePeriodSeconds above.
+            - name: SHUTDOWN_TIMEOUT
+              value: "30"
             - name: CLIENT_ID
               valueFrom:
                 secretKeyRef:

@@ -3,6 +3,15 @@ kind: Service
 metadata:
   name: xool
   namespace: xool
+  # While a rollout has both pods up, pin each browser to one of them. A tab
+  # opened before the deploy then keeps reaching the pod that still has its
+  # assets, instead of bouncing to the new pod and 404ing on a chunk.
+  annotations:
+    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
+    traefik.ingress.kubernetes.io/service.sticky.cookie.name: xool_backend
+    traefik.ingress.kubernetes.io/service.sticky.cookie.secure: "true"
+    traefik.ingress.kubernetes.io/service.sticky.cookie.httponly: "true"
+    traefik.ingress.kubernetes.io/service.sticky.cookie.samesite: lax
 spec:
   selector:
     app: xool
