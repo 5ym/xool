@@ -41,6 +41,11 @@ export type File = { name: string; isDeletable: boolean };
 		dialog?.close();
 	}
 
+	// Read at click time, when `location` exists.
+	function lgtmMarkdown(fileName: string) {
+		return `![LGTM](${window.location.origin}/images/${fileName})`;
+	}
+
 	function removeItem(fileName: string) {
 		items = items.filter((f) => f.name !== fileName);
 	}
@@ -112,7 +117,7 @@ export type File = { name: string; isDeletable: boolean };
 					onDeleted={() => removeItem(file.name)}
 				/>
 			{/if}
-			<CopyButton fileName={file.name} />
+			<CopyButton text={() => lgtmMarkdown(file.name)} />
 		</div>
 	{/each}
 </div>
@@ -136,7 +141,7 @@ export type File = { name: string; isDeletable: boolean };
 					/>
 				{/if}
 				<CopyButton
-					fileName={diaImage.name}
+					text={() => lgtmMarkdown(diaImage?.name ?? "")}
 					onClick={closeDialog}
 					isVisible={false}
 				/>
