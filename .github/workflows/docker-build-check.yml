@@ -7,10 +7,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # The bot's image-bump PRs only touch k3s/, so there is nothing to build.
-    # Skipping at the job level (not via paths-ignore) still reports the
-    # required "build" check, so the PR stays mergeable.
-    if: github.event.pull_request.user.login != 'github-actions[bot]'
+    # The image-bump PRs only touch k3s/, so there is nothing to build. Note
+    # that this skip never actually fires for them: they are opened with
+    # GITHUB_TOKEN, which by design starts no workflow run at all, so nothing
+    # here reports and docker-publish.yml posts their "build" status itself.
+    # The guard stays as a safety net for a bump PR opened by anyone else.
+    if: github.head_ref != 'bump-xool-image'
     steps:
       - uses: actions/checkout@v7
 
