@@ -26,8 +26,14 @@ export type File = { name: string; isDeletable: boolean };
 	let isGetting = $state(false);
 	let diaImage = $state<File>();
 	let dialog: HTMLDialogElement | undefined = $state();
+	// Filled in from the preview image once it loads; see the dialog below for
+	// why its own proportions are needed to size it.
+	let previewW = $state(0);
+	let previewH = $state(0);
 
 	function onClickItem(file: File) {
+		previewW = 0;
+		previewH = 0;
 		diaImage = file;
 		dialog?.showModal();
 	}
@@ -116,7 +122,7 @@ export type File = { name: string; isDeletable: boolean };
 		tile. Let it grow to the viewport instead, and size the image below so a
 		tall one is bounded by height rather than overflowing.
 	-->
-	<div class="modal-box w-auto max-w-[90vw] p-4">
+	<div class="modal-box w-auto max-w-[92vw] p-2">
 		<div class="relative group/item">
 			{#if diaImage}
 				{#if diaImage.isDeletable}
@@ -134,12 +140,26 @@ export type File = { name: string; isDeletable: boolean };
 					onClick={closeDialog}
 					isVisible={false}
 				/>
+				<!--
+					Uploads are capped at 960px but most are well under it, and leaving
+					the width to the image renders those at 1:1 -- a 500px wide one sat
+					in an 8% corner of the screen. Asking for a width instead doesn't
+					work either: a max-height then clamps the height without pulling the
+					width back with it, and the picture stretches. So take the width from
+					the image's own proportions, picking whichever of the two limits
+					binds first. It fills the window, keeps its shape, and never spills.
+				-->
 				<img
 					src={`/images/${diaImage.name}`}
 					alt="LGTM"
 					width="960"
 					height="960"
-					class="block max-h-[92vh] w-auto max-w-full object-contain"
+					bind:naturalWidth={previewW}
+					bind:naturalHeight={previewH}
+					style={previewW && previewH
+						? `width: min(86vw, calc(88vh * ${previewW / previewH}))`
+						: undefined}
+					class="block h-auto max-h-[88vh] max-w-[86vw]"
 				/>
 			{:else}
 				<div class="skeleton h-full w-full"></div>
