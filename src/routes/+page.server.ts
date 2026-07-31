@@ -26,24 +26,24 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		return { message, wkey };
 	}
 
-	const curlHtml = (await highlighter).codeToHtml(
-		`curl \\\n\t--location '${HOST_URL}/api/tweets' \\\n\t--header 'Content-Type: application/json' \\\n\t--data '{"key": "${wkey}","text": "example"}'`,
-		{
-			lang: "bash",
-			theme: "one-dark-pro",
-			transformers: [
-				{
-					pre(node) {
-						this.addClassToHast(node, "px-4 py-3 overflow-auto rounded-lg");
-					},
+	const curl = `curl \\\n\t--location '${HOST_URL}/api/tweets' \\\n\t--header 'Content-Type: application/json' \\\n\t--data '{"key": "${wkey}","text": "example"}'`;
+
+	const curlHtml = (await highlighter).codeToHtml(curl, {
+		lang: "bash",
+		theme: "one-dark-pro",
+		transformers: [
+			{
+				pre(node) {
+					this.addClassToHast(node, "px-4 py-3 overflow-auto rounded-lg");
 				},
-			],
-		},
-	);
+			},
+		],
+	});
 
 	return {
 		message,
 		wkey,
+		curl,
 		curlHtml,
 		keyInfo: autoAction("me", wkey),
 	};

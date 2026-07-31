@@ -2,21 +2,23 @@
 import { setMessage } from "$lib/stores/toast.svelte";
 
 let {
-	fileName,
+	// A function rather than a string: callers build their text from
+	// `location`, which does not exist while the page renders on the server.
+	text,
+	message = "リンクをコピーしました",
 	onClick = () => {},
 	isVisible = true,
 }: {
-	fileName: string;
+	text: () => string;
+	message?: string;
 	onClick?: () => void;
 	isVisible?: boolean;
 } = $props();
 
 function onClickCopy(e: MouseEvent) {
 	e.stopPropagation();
-	navigator.clipboard.writeText(
-		`![LGTM](${window.location.origin}/images/${fileName})`,
-	);
-	setMessage("リンクをコピーしました");
+	navigator.clipboard.writeText(text());
+	setMessage(message);
 	onClick();
 }
 </script>

@@ -23,7 +23,7 @@ let { data }: PageProps = $props();
 				<ErrorAlert>{ret.error}</ErrorAlert>
 			{:else}
 				<h3>curlサンプル</h3>
-				<CodeBlock html={data.curlHtml ?? ""} />
+				<CodeBlock html={data.curlHtml ?? ""} code={data.curl ?? ""} />
 				<h3>現在のアカウント</h3>
 				{#if ret?.status === 429}
 					<div role="alert" class="alert alert-warning">
