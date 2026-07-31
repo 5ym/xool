@@ -58,7 +58,13 @@ export type File = { name: string; isDeletable: boolean };
 		items = [...fileNameList];
 		page = 2;
 		isGetting = false;
-		handleScroll();
+		// handleScroll reads isGetting and page, which this effect has just
+		// written. Tracking those reads made the effect depend on its own
+		// writes: the first pass set isGetting = true, that invalidated the
+		// effect, and the re-run reset page back to 2 and fetched again. Only
+		// fileNameList above is meant to re-trigger this, so kick the initial
+		// fill off outside the tracking scope.
+		untrack(handleScroll);
 		window.addEventListener("scroll", handleScroll);
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
