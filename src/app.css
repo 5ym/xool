@@ -11,3 +11,10 @@
 	--font-serif: "BIZ UDPMincho", serif;
 	--font-mono: MesloLGS NF;
 }
+
+/* Keeps the header aligned with the body copy, which `prose` caps at 65ch. */
+@utility page-container {
+	width: 100%;
+	max-width: 65ch;
+	margin-inline: auto;
+}

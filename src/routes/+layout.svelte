@@ -11,14 +11,16 @@ let { children } = $props();
 	<meta name="description" content="Tool for 𝕏" />
 </svelte:head>
 
-<nav class="navbar">
-	<div class="flex-1">
-		<a class="btn btn-ghost text-xl" href="/">𝕏ool</a>
-	</div>
-	<div class="flex-none">
-		<ul class="menu menu-horizontal px-1">
-			<Nav />
-		</ul>
+<nav class="navbar px-0">
+	<div class="page-container flex items-center">
+		<div class="flex-1">
+			<a class="btn btn-ghost text-xl" href="/">𝕏ool</a>
+		</div>
+		<div class="flex-none">
+			<ul class="menu menu-horizontal px-0">
+				<Nav />
+			</ul>
+		</div>
 	</div>
 </nav>
 <main>
