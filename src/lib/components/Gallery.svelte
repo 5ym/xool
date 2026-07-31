@@ -111,7 +111,12 @@ export type File = { name: string; isDeletable: boolean };
 	{/each}
 </div>
 <dialog bind:this={dialog} class="modal">
-	<div class="modal-box w-auto">
+	<!--
+		modal-box caps itself at 32rem, which left the preview barely wider than a
+		tile. Let it grow to the viewport instead, and size the image below so a
+		tall one is bounded by height rather than overflowing.
+	-->
+	<div class="modal-box w-auto max-w-[90vw] p-4">
 		<div class="relative group/item">
 			{#if diaImage}
 				{#if diaImage.isDeletable}
@@ -129,7 +134,13 @@ export type File = { name: string; isDeletable: boolean };
 					onClick={closeDialog}
 					isVisible={false}
 				/>
-				<img src={`/images/${diaImage.name}`} alt="LGTM" width="960" height="960" />
+				<img
+					src={`/images/${diaImage.name}`}
+					alt="LGTM"
+					width="960"
+					height="960"
+					class="block max-h-[92vh] w-auto max-w-full object-contain"
+				/>
 			{:else}
 				<div class="skeleton h-full w-full"></div>
 			{/if}
