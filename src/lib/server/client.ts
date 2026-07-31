@@ -1,6 +1,41 @@
 import db from "./db";
 import type { User } from "./model";
 
+export type RateLimit = {
+	httpStatus: number;
+	limit?: number;
+	remaining?: number;
+	reset?: number;
+	daily?: {
+		limit?: number;
+		remaining?: number;
+		reset?: number;
+	};
+	retryAfter?: number;
+};
+
+function headerNumber(res: Response, name: string) {
+	const value = res.headers.get(name);
+	if (value === null) return undefined;
+	const parsed = Number(value);
+	return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+function rateLimitOf(res: Response): RateLimit {
+	return {
+		httpStatus: res.status,
+		limit: headerNumber(res, "x-rate-limit-limit"),
+		remaining: headerNumber(res, "x-rate-limit-remaining"),
+		reset: headerNumber(res, "x-rate-limit-reset"),
+		daily: {
+			limit: headerNumber(res, "x-user-limit-24hour-limit"),
+			remaining: headerNumber(res, "x-user-limit-24hour-remaining"),
+			reset: headerNumber(res, "x-user-limit-24hour-reset"),
+		},
+		retryAfter: headerNumber(res, "retry-after"),
+	};
+}
+
 export async function client(
 	method: string,
 	url: string,
@@ -20,14 +55,16 @@ export async function client(
 					Authorization: `Bearer ${bearer}`,
 				};
 
-	return await (
-		await fetch(`https://api.x.com/2/${url}`, {
-			method,
-			headers,
-			body,
-			cache: "no-store",
-		})
-	).json();
+	const res = await fetch(`https://api.x.com/2/${url}`, {
+		method,
+		headers,
+		body,
+		cache: "no-store",
+	});
+
+	// Callers need the throttling window to decide when a rejected request may
+	// be retried, and x.com only reports it in the response headers.
+	return { ...(await res.json()), rateLimit: rateLimitOf(res) };
 }
 
 export async function refreshToken(refreshToken: string) {
@@ -68,6 +105,7 @@ type ReturnType<T, U = undefined> = {
 	error?: string;
 	data: T;
 	meta: U;
+	rateLimit?: RateLimit;
 };
 
 export async function action(
