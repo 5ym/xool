@@ -9,6 +9,15 @@ on:
       - 'k3s/**'
   workflow_dispatch:
 
+# Merging several PRs at once used to start a run per merge, and they all raced
+# for the one bump branch: the first to finish moved main, the rest were left
+# proposing a bump from a base that no longer existed, and the newest build --
+# the only one anybody wanted deployed -- lost. Only the newest commit is worth
+# deploying, so supersede the older runs instead of racing them.
+concurrency:
+  group: publish
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
 
@@ -63,15 +72,21 @@ jobs:
       # "build" context to the GitHub Actions app.
       - name: Open and self-merge PR to update deployment image tag
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          branch="bump-xool-image"
+          # Build the bump on top of main as it stands now, not on the commit
+          # this run was triggered by. Those differ whenever an earlier bump has
+          # landed in between, and a branch cut from the older point proposes a
+          # change to a line that has since moved, which GitHub reports as a
+          # conflict and no one can merge.
+          git fetch --depth=1 origin main
+          git checkout -B "$branch" FETCH_HEAD
           sed -i "s#image: ${REGISTRY}/[^:[:space:]]*/xool:[^[:space:]]*#image: ${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}#" k3s/deployment.yaml
           if git diff --quiet -- k3s/deployment.yaml; then
             echo "k3s/deployment.yaml already points at ${GITHUB_SHA}; nothing to deploy"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          branch="bump-xool-image"
-          git checkout -b "$branch"
           git add k3s/deployment.yaml
           git commit -m "chore: update xool image to ${GITHUB_SHA}"
           git push --force origin "$branch"
