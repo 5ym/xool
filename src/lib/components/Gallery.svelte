@@ -76,11 +76,30 @@ export type File = { name: string; isDeletable: boolean };
 	class="flex flex-wrap gap-3 overflow-x-hidden overflo-y-visible py-3"
 >
 	{#each items as file (file.name)}
-		<button
-			class="relative grow h-64 max-w-lg cursor-pointer rounded-lg overflow-hidden bg-primary-content hover:scale-105 transition-all"
-			onclick={() => onClickItem(file)}
-			type="button"
+		<!--
+			The copy and delete buttons overlay the tile, so they have to be
+			positioned against it -- but they cannot be *inside* it while the tile
+			is itself a <button>. Nested buttons are invalid, and the parser
+			resolves them by closing the outer one early, which left the tile empty
+			and threw the image and the overlays out into the row. Keep the tile as
+			a plain positioned element and let the image be the button.
+		-->
+		<div
+			class="relative grow h-64 max-w-lg rounded-lg overflow-hidden bg-primary-content hover:scale-105 transition-all"
 		>
+			<button
+				class="block h-full w-full cursor-pointer"
+				onclick={() => onClickItem(file)}
+				type="button"
+			>
+				<img
+					src={`/images/${file.name}`}
+					alt="LGTM"
+					class="h-full w-full object-cover"
+					width="960"
+					height="960"
+				/>
+			</button>
 			{#if file.isDeletable}
 				<DeleteButton
 					fileName={file.name}
@@ -88,18 +107,16 @@ export type File = { name: string; isDeletable: boolean };
 				/>
 			{/if}
 			<CopyButton fileName={file.name} />
-			<img
-				src={`/images/${file.name}`}
-				alt="LGTM"
-				class="h-full w-full object-cover"
-				width="960"
-				height="960"
-			/>
-		</button>
+		</div>
 	{/each}
 </div>
 <dialog bind:this={dialog} class="modal">
-	<div class="modal-box w-auto">
+	<!--
+		modal-box caps itself at 32rem, which left the preview barely wider than a
+		tile. Let it grow to the viewport instead, and size the image below so a
+		tall one is bounded by height rather than overflowing.
+	-->
+	<div class="modal-box w-auto max-w-[90vw] p-4">
 		<div class="relative group/item">
 			{#if diaImage}
 				{#if diaImage.isDeletable}
@@ -117,7 +134,13 @@ export type File = { name: string; isDeletable: boolean };
 					onClick={closeDialog}
 					isVisible={false}
 				/>
-				<img src={`/images/${diaImage.name}`} alt="LGTM" width="960" height="960" />
+				<img
+					src={`/images/${diaImage.name}`}
+					alt="LGTM"
+					width="960"
+					height="960"
+					class="block max-h-[92vh] w-auto max-w-full object-contain"
+				/>
 			{:else}
 				<div class="skeleton h-full w-full"></div>
 			{/if}
