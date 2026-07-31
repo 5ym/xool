@@ -40,6 +40,10 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          # Baked into version.json so tabs opened before a rollout can tell
+          # they are running an older build.
+          build-args: |
+            APP_VERSION=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

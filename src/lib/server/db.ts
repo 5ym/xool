@@ -11,6 +11,10 @@ export default function db(): DatabaseType {
 	mkdirSync(dirname(path), { recursive: true });
 	instance = new Database(path);
 	instance.exec("PRAGMA journal_mode = WAL;");
+	// During a rolling update the outgoing and incoming pod share this file for
+	// a few seconds. WAL lets them read concurrently; this makes the one writer
+	// at a time wait its turn instead of failing with SQLITE_BUSY.
+	instance.exec("PRAGMA busy_timeout = 5000;");
 	instance.run(`
 		CREATE TABLE IF NOT EXISTS user (
 			key TEXT PRIMARY KEY,

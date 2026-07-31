@@ -8,6 +8,10 @@ ENV NODE_ENV=production
 COPY package.json bun.lock ./
 RUN bun i --frozen-lockfile
 COPY . .
+# Declared after the source copy so it can't invalidate the dependency layers.
+# Stamps the build into version.json, which open tabs poll to spot a rollout.
+ARG APP_VERSION
+ENV APP_VERSION=$APP_VERSION
 RUN bun run build
 
 FROM base AS prod-deps
