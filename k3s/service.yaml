@@ -3,15 +3,14 @@ kind: Service
 metadata:
   name: xool
   namespace: xool
-  # While a rollout has both pods up, pin each browser to one of them. A tab
-  # opened before the deploy then keeps reaching the pod that still has its
-  # assets, instead of bouncing to the new pod and 404ing on a chunk.
-  annotations:
-    traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
-    traefik.ingress.kubernetes.io/service.sticky.cookie.name: xool_backend
-    traefik.ingress.kubernetes.io/service.sticky.cookie.secure: "true"
-    traefik.ingress.kubernetes.io/service.sticky.cookie.httponly: "true"
-    traefik.ingress.kubernetes.io/service.sticky.cookie.samesite: lax
+  # No sticky cookie here. It was added to pin a browser to one pod while a
+  # rollout had two of them up, but Traefik sets that cookie on every response,
+  # and Cloudflare will not cache anything carrying Set-Cookie -- so every
+  # hashed asset went to the origin on every request, permanently, to smooth
+  # over a window that lasts under a minute per deploy. Letting the CDN cache
+  # them solves the same problem better: a tab from before the deploy takes its
+  # old chunks straight from the edge, where they are still stored under their
+  # own hashed names, and never reaches a pod that no longer has them.
 spec:
   selector:
     app: xool
