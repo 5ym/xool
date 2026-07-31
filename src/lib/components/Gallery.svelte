@@ -3,6 +3,7 @@ export type File = { name: string; isDeletable: boolean };
 </script>
 
 <script lang="ts">
+	import { untrack } from "svelte";
 	import CopyButton from "./CopyButton.svelte";
 	import DeleteButton from "./DeleteButton.svelte";
 
@@ -18,7 +19,9 @@ export type File = { name: string; isDeletable: boolean };
 
 	// Seeds SSR output with the initial page; the $effect below only
 	// re-syncs on later prop changes (e.g. switching tabs), client-side.
-	let items = $state<File[]>(fileNameList);
+	// Reading the prop through untrack says that capturing just this first
+	// value is the point, rather than an oversight the compiler should flag.
+	let items = $state<File[]>(untrack(() => fileNameList));
 	let page = $state(2);
 	let isGetting = $state(false);
 	let diaImage = $state<File>();
