@@ -16,7 +16,10 @@ RUN bun run build
 
 FROM base AS prod-deps
 COPY package.json bun.lock ./
-RUN bun i --frozen-lockfile --production
+# sharp ships a prebuilt libvips per platform and the install pulls both the
+# glibc and the musl build of it, about 18MB each. This image is Debian, so the
+# musl half can never be loaded -- drop it rather than carry it in every layer.
+RUN bun i --frozen-lockfile --production && rm -rf node_modules/@img/*musl*
 
 FROM base
 RUN mkdir -p data images && chown bun:bun data images
