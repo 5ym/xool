@@ -27,13 +27,15 @@ export type File = { name: string; isDeletable: boolean };
 	let diaImage = $state<File>();
 	let dialog: HTMLDialogElement | undefined = $state();
 	// Filled in from the preview image once it loads; see the dialog below for
-	// why its own proportions are needed to size it.
+	// why its own proportions are needed to size it. Deliberately not cleared
+	// when the dialog opens: reopening the same picture leaves src untouched, so
+	// no load event follows to put the numbers back, and the preview would fall
+	// back to the raw file size. Picking a different one does change src, and
+	// its load event overwrites these.
 	let previewW = $state(0);
 	let previewH = $state(0);
 
 	function onClickItem(file: File) {
-		previewW = 0;
-		previewH = 0;
 		diaImage = file;
 		dialog?.showModal();
 	}
