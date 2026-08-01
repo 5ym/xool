@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		return { message, wkey };
 	}
 
-	const curl = `curl \\\n\t--location '${HOST_URL}/api/tweets' \\\n\t--header 'Content-Type: application/json' \\\n\t--data '{"key": "${wkey}","text": "example"}'`;
+	const curl = `curl \\\n\t--location '${HOST_URL}/api/tweets/${wkey}' \\\n\t--header 'Content-Type: application/json' \\\n\t--data '{"text": "example"}'`;
 
 	const curlHtml = (await highlighter).codeToHtml(curl, {
 		lang: "bash",
