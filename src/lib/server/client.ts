@@ -77,9 +77,7 @@ export async function refreshToken(refreshToken: string) {
 
 export type ActionPayload = {
 	text?: string;
-	media?: string;
 	id?: string;
-	sinceId?: string;
 	startTime?: string;
 };
 
@@ -167,29 +165,6 @@ export async function action(
 				JSON.stringify({ text: payload?.text }),
 				accessToken,
 			);
-		case "userTweets": {
-			const searchParams = new URLSearchParams({
-				max_results: "100",
-			});
-			if (payload?.sinceId) {
-				searchParams.append("since_id", payload.sinceId);
-			}
-			return (await client(
-				"GET",
-				`users/${payload?.id}/tweets?${searchParams.toString()}`,
-				null,
-				accessToken,
-			)) as ReturnType<
-				{
-					id: string;
-					text: string;
-				}[],
-				{
-					newest_id: string;
-					oldest_id: string;
-				}
-			>;
-		}
 		case "tweetMetrics": {
 			const searchParams = new URLSearchParams({
 				max_results: "100",

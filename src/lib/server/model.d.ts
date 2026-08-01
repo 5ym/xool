@@ -4,12 +4,6 @@ export interface User {
 	key: string;
 	socialId: string;
 }
-export interface LImage {
-	id: number;
-	fileName: string;
-	userKey: string;
-	createdAt: number;
-}
 export interface Tweet {
 	tweetId: string;
 	userKey: string;
