@@ -60,11 +60,36 @@ export async function client(
 		headers,
 		body,
 		cache: "no-store",
+		// Without a deadline a call that never answers leaves whoever awaited it
+		// waiting forever -- on the top page that is a skeleton that never turns
+		// into anything.
+		signal: AbortSignal.timeout(15000),
 	});
 
 	// Callers need the throttling window to decide when a rejected request may
 	// be retried, and x.com only reports it in the response headers.
-	return { ...(await res.json()), rateLimit: rateLimitOf(res) };
+	return {
+		...parseBody(await res.text(), res.status),
+		rateLimit: rateLimitOf(res),
+	};
+}
+
+// x.com does not always answer in JSON: an edge error page or an empty body
+// comes back for some 429s and 5xxs, and parsing that used to throw out of
+// client() as a rejection no caller expected.
+function parseBody(text: string, status: number) {
+	if (text === "") return { status, error: `x.comが${status}を返しました` };
+	try {
+		const parsed = JSON.parse(text);
+		return typeof parsed === "object" && parsed !== null
+			? parsed
+			: { status, data: parsed };
+	} catch {
+		return {
+			status,
+			error: `x.comの応答を解釈できませんでした: ${text.slice(0, 200)}`,
+		};
+	}
 }
 
 export async function refreshToken(refreshToken: string) {
@@ -95,8 +120,12 @@ export async function autoAction(
 	const ret = await action(type, accessToken, payload);
 	if (ret?.status !== 401) return ret;
 	const refreshedToken = await refreshToken(existUser.refreshToken);
-	if (refreshedToken.error === "invalid_request")
-		return { error: "再認証してください" };
+	// Only invalid_request used to be treated as "sign in again", but x.com has
+	// more ways to turn a refresh down -- invalid_grant for a token that was
+	// revoked or already spent, unauthorized_client, an outage page. Every one
+	// of those left access_token undefined, and the UPDATE below then threw on
+	// the undefined binding instead of asking the user to re-authenticate.
+	if (!refreshedToken.access_token) return { error: "再認証してください" };
 	accessToken = refreshedToken.access_token;
 	db().run("UPDATE user SET accessToken = ?, refreshToken = ? WHERE key = ?", [
 		accessToken,

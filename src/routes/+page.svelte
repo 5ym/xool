@@ -67,6 +67,13 @@ let { data }: PageProps = $props();
 					別のアカウントを使用する場合は下記で認証画面内でアカウント選択できます
 				</h3>
 			{/if}
+		{:catch error}
+			<!-- Without this branch Svelte leaves the skeleton above on screen when
+			     the promise rejects, so a failed lookup looks like one still
+			     loading and never resolves. -->
+			<ErrorAlert>
+				アカウント情報を取得できませんでした: {error.message}
+			</ErrorAlert>
 		{/await}
 	{/if}
 	<SignInButton />
