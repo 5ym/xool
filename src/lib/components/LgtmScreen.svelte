@@ -9,11 +9,21 @@ type Props = {
 	message?: string;
 	wkey?: string;
 	isLoggedIn: boolean;
+	ghLogin?: string;
+	xLinked?: boolean;
 	recentImages: GalleryFile[];
 	myImages: GalleryFile[];
 };
 
-let { message, wkey, isLoggedIn, recentImages, myImages }: Props = $props();
+let {
+	message,
+	wkey,
+	isLoggedIn,
+	ghLogin,
+	xLinked,
+	recentImages,
+	myImages,
+}: Props = $props();
 </script>
 
 <div class="prose mx-auto p-4">
@@ -27,9 +37,26 @@ let { message, wkey, isLoggedIn, recentImages, myImages }: Props = $props();
 	{/if}
 	{#if isLoggedIn && wkey}
 		<Upload />
+		<p class="text-sm opacity-60">
+			ログイン中:
+			{[ghLogin && `GitHub (${ghLogin})`, xLinked && "𝕏"]
+				.filter(Boolean)
+				.join(" / ")}
+		</p>
+		{#if !ghLogin || !xLinked}
+			<!-- Signing in the other way as well merges the two into one account,
+			     so images uploaded under either one stay yours. -->
+			<p class="text-sm opacity-60">
+				もう一方でもログインすると同じアカウントに紐づきます
+			</p>
+			<SignInButton provider={ghLogin ? "x" : "github"} />
+		{/if}
 	{:else}
-		<p>作成機能を利用するにはGitHubでログインしてください</p>
-		<SignInButton provider="github" />
+		<p>作成機能を利用するにはログインしてください</p>
+		<div class="flex gap-3 not-prose">
+			<SignInButton provider="github" />
+			<SignInButton />
+		</div>
 	{/if}
 </div>
 <div role="tablist" class="tabs tabs-border tabs-xl mb-3">

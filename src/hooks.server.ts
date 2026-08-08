@@ -20,7 +20,9 @@ if (!building) {
 }
 
 const LGTM_ONLY = ["/lgtm", "/api/gh"];
-const XOOL_ONLY = ["/api/summary", "/api/oauth", "/api/cb"];
+// The x.com sign-in is not on this list: LGTM offers it too, so that signing in
+// both ways links the two into one account.
+const XOOL_ONLY = ["/api/summary"];
 
 const startsWith = (path: string, prefixes: string[]) =>
 	prefixes.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
