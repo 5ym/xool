@@ -4,22 +4,3 @@ export interface User {
 	key: string;
 	socialId: string;
 }
-export interface Tweet {
-	tweetId: string;
-	userKey: string;
-	text: string;
-	postedAt: number;
-}
-export interface TweetMetric {
-	id: number;
-	tweetId: string;
-	capturedAt: number;
-	impressions: number;
-	profileClicks: number;
-	linkClicks: number;
-	likes: number;
-	reposts: number;
-	replies: number;
-	quotes: number;
-	bookmarks: number;
-}

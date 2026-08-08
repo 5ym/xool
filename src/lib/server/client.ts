@@ -102,8 +102,6 @@ export async function refreshToken(refreshToken: string) {
 
 export type ActionPayload = {
 	text?: string;
-	id?: string;
-	startTime?: string;
 };
 
 export async function autoAction(
@@ -135,39 +133,11 @@ export async function autoAction(
 	return await action(type, accessToken, payload);
 }
 
-type ReturnType<T, U = undefined> = {
+type ReturnType<T> = {
 	status?: number;
 	error?: string;
 	data: T;
-	meta: U;
 	rateLimit?: RateLimit;
-};
-
-export type XPostMetrics = {
-	id: string;
-	text: string;
-	created_at: string;
-	public_metrics?: {
-		impression_count?: number;
-		like_count?: number;
-		retweet_count?: number;
-		reply_count?: number;
-		quote_count?: number;
-		bookmark_count?: number;
-	};
-	non_public_metrics?: {
-		impression_count?: number;
-		user_profile_clicks?: number;
-		url_link_clicks?: number;
-	};
-	organic_metrics?: {
-		impression_count?: number;
-		user_profile_clicks?: number;
-		url_link_clicks?: number;
-		like_count?: number;
-		retweet_count?: number;
-		reply_count?: number;
-	};
 };
 
 export async function action(
@@ -194,32 +164,6 @@ export async function action(
 				JSON.stringify({ text: payload?.text }),
 				accessToken,
 			);
-		case "tweetMetrics": {
-			const searchParams = new URLSearchParams({
-				max_results: "100",
-				"tweet.fields":
-					"created_at,public_metrics,non_public_metrics,organic_metrics",
-			});
-			// x.com refuses the whole request when the range reaches back past the
-			// 30 day window it keeps non-public and organic metrics for, so the
-			// caller has to bound it.
-			if (payload?.startTime) {
-				searchParams.append("start_time", payload.startTime);
-			}
-			return (await client(
-				"GET",
-				`users/${payload?.id}/tweets?${searchParams.toString()}`,
-				null,
-				accessToken,
-			)) as ReturnType<
-				XPostMetrics[],
-				{
-					newest_id: string;
-					oldest_id: string;
-					result_count: number;
-				}
-			>;
-		}
 	}
 
 	return {

@@ -32,34 +32,8 @@ export default function db(): DatabaseType {
 		)
 	`);
 	instance.run("CREATE INDEX IF NOT EXISTS lImage_userKey ON lImage(userKey)");
-	instance.run(`
-		CREATE TABLE IF NOT EXISTS tweet (
-			tweetId TEXT PRIMARY KEY,
-			userKey TEXT NOT NULL,
-			text TEXT NOT NULL,
-			postedAt INTEGER NOT NULL
-		)
-	`);
-	instance.run(
-		"CREATE INDEX IF NOT EXISTS tweet_userKey ON tweet(userKey, postedAt DESC)",
-	);
-	instance.run(`
-		CREATE TABLE IF NOT EXISTS tweetMetric (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			tweetId TEXT NOT NULL,
-			capturedAt INTEGER NOT NULL,
-			impressions INTEGER NOT NULL,
-			profileClicks INTEGER NOT NULL,
-			linkClicks INTEGER NOT NULL,
-			likes INTEGER NOT NULL,
-			reposts INTEGER NOT NULL,
-			replies INTEGER NOT NULL,
-			quotes INTEGER NOT NULL,
-			bookmarks INTEGER NOT NULL
-		)
-	`);
-	instance.run(
-		"CREATE INDEX IF NOT EXISTS tweetMetric_tweetId ON tweetMetric(tweetId, capturedAt)",
-	);
+	// The tweet and tweetMetric tables the metrics page filled are deliberately
+	// left alone rather than dropped: the snapshots in them cannot be taken
+	// again, and x.com only serves the numbers behind them for 30 days.
 	return instance;
 }
