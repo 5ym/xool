@@ -1,5 +1,4 @@
 <script lang="ts">
-import CodeBlock from "$lib/components/CodeBlock.svelte";
 import ErrorAlert from "$lib/components/ErrorAlert.svelte";
 import SignInButton from "$lib/components/SignInButton.svelte";
 import type { PageProps } from "./$types";
@@ -8,13 +7,11 @@ let { data }: PageProps = $props();
 </script>
 
 <div class="mx-auto p-4 prose">
-	<p>Webhookで𝕏にポストをできるようにするウェブアプリケーションです</p>
+	<p>𝕏まわりの小さな道具をまとめたウェブアプリケーションです</p>
 	{#if data.message !== undefined}
 		<ErrorAlert>{data.message}</ErrorAlert>
 	{:else if data.wkey !== undefined && data.keyInfo}
 		{#await data.keyInfo}
-			<div class="skeleton h-8 w-full mt-8 mb-3"></div>
-			<div class="skeleton h-24 w-full mb-4"></div>
 			<div class="skeleton h-8 w-full mt-8 mb-3"></div>
 			<div class="skeleton h-24 w-full mt-7 mb-7"></div>
 			<div class="skeleton h-8 w-full mt-8 mb-3"></div>
@@ -22,8 +19,6 @@ let { data }: PageProps = $props();
 			{#if ret?.error}
 				<ErrorAlert>{ret.error}</ErrorAlert>
 			{:else}
-				<h3>curlサンプル</h3>
-				<CodeBlock html={data.curlHtml ?? ""} code={data.curl ?? ""} />
 				<h3>現在のアカウント</h3>
 				{#if ret?.status === 429}
 					<div role="alert" class="alert alert-warning">
@@ -98,7 +93,7 @@ let { data }: PageProps = $props();
 	</p>
 	<h3>プライバシー</h3>
 	<p>
-		Webhookを作成するにあたってUser ID, Access Token, Refresh
+		𝕏との連携にあたってUser ID, Access Token, Refresh
 		Tokenのみをサーバに保存しております。
 		<br />
 		そのほかのユーザー情報の取得は一切行っておりませんので、ご安心ください。
