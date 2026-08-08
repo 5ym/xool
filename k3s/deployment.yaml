@@ -58,8 +58,15 @@ spec:
             periodSeconds: 10
             failureThreshold: 6
           env:
-            - name: ORIGIN
-              value: https://x.doany.io
+            # No fixed ORIGIN: this pod serves two hostnames, so the origin has
+            # to come from the request. Traefik sets both of these headers.
+            - name: PROTOCOL_HEADER
+              value: x-forwarded-proto
+            - name: HOST_HEADER
+              value: x-forwarded-host
+            # The hostname LGTM answers on. Anything else is the summary tool.
+            - name: LGTM_HOST
+              value: l.doany.io
             # Finish serving in-flight requests before exiting; must stay under
             # terminationGracePeriodSeconds above.
             - name: SHUTDOWN_TIMEOUT
@@ -79,6 +86,21 @@ spec:
                 secretKeyRef:
                   name: xool-secrets
                   key: hash
+            # optional until the sealed secret carries them: without it a pod
+            # rolled out before the GitHub app exists cannot start at all, and
+            # the only thing that stops working is LGTM's sign-in.
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: xool-secrets
+                  key: github-client-id
+                  optional: true
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: xool-secrets
+                  key: github-client-secret
+                  optional: true
           volumeMounts:
             - name: xool-images
               mountPath: /usr/src/app/images

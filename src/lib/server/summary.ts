@@ -31,16 +31,15 @@ export function getSummary(userKey: string): Summary | null {
 }
 
 export function setEnabled(userKey: string, enabled: boolean) {
-	// Start the clock on yesterday. Otherwise switching this on at noon posts a
-	// summary for a day that ended hours ago, which reads as the tool talking
-	// out of turn.
+	// lastSummarizedOn stays null on the way in, which makes yesterday due
+	// immediately: switching this on is how you find out what it posts, and
+	// waiting until midnight to find out is a poor way to learn that.
+	// Turning it off and on again does not repost -- the date recorded by that
+	// first run is kept.
 	db().run(
-		`INSERT INTO summary (userKey, enabled, lastSummarizedOn) VALUES (?, ?, ?)
-		 ON CONFLICT(userKey) DO UPDATE SET
-			enabled = excluded.enabled,
-			lastSummarizedOn = excluded.lastSummarizedOn,
-			lastError = NULL`,
-		[userKey, enabled ? 1 : 0, addDays(jstDate(Date.now()), -1)],
+		`INSERT INTO summary (userKey, enabled) VALUES (?, ?)
+		 ON CONFLICT(userKey) DO UPDATE SET enabled = excluded.enabled, lastError = NULL`,
+		[userKey, enabled ? 1 : 0],
 	);
 }
 
@@ -187,13 +186,20 @@ async function postSummary(row: Summary, date: string) {
  * one and has not had it yet. Safe to call as often as you like: a day already
  * summarised is skipped, so restarts and overlapping ticks do not repost.
  */
-export async function postDueSummaries(now = Date.now()) {
+export async function postDueSummaries(userKey?: string, now = Date.now()) {
 	const date = addDays(jstDate(now), -1);
-	const due = db()
-		.query<Summary, [string]>(
-			"SELECT * FROM summary WHERE enabled = 1 AND (lastSummarizedOn IS NULL OR lastSummarizedOn < ?)",
-		)
-		.all(date);
+	const due =
+		userKey === undefined
+			? db()
+					.query<Summary, [string]>(
+						"SELECT * FROM summary WHERE enabled = 1 AND (lastSummarizedOn IS NULL OR lastSummarizedOn < ?)",
+					)
+					.all(date)
+			: db()
+					.query<Summary, [string, string]>(
+						"SELECT * FROM summary WHERE enabled = 1 AND userKey = ? AND (lastSummarizedOn IS NULL OR lastSummarizedOn < ?)",
+					)
+					.all(userKey, date);
 
 	for (const row of due) {
 		await postSummary(row, date);

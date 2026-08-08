@@ -23,6 +23,15 @@ export default function db(): DatabaseType {
 			refreshToken TEXT NOT NULL
 		)
 	`);
+	// LGTM's own sign-in. No token is kept: it is only ever used once, during
+	// the callback, to ask GitHub who just arrived.
+	instance.run(`
+		CREATE TABLE IF NOT EXISTS ghUser (
+			key TEXT PRIMARY KEY,
+			githubId TEXT NOT NULL UNIQUE,
+			login TEXT NOT NULL
+		)
+	`);
 	instance.run(`
 		CREATE TABLE IF NOT EXISTS lImage (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,

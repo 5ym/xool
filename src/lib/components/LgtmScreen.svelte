@@ -1,10 +1,19 @@
 <script lang="ts">
+import ErrorAlert from "$lib/components/ErrorAlert.svelte";
+import type { File as GalleryFile } from "$lib/components/Gallery.svelte";
 import Gallery from "$lib/components/Gallery.svelte";
 import SignInButton from "$lib/components/SignInButton.svelte";
 import Upload from "$lib/components/Upload.svelte";
-import type { PageProps } from "./$types";
 
-let { data }: PageProps = $props();
+type Props = {
+	message?: string;
+	wkey?: string;
+	isLoggedIn: boolean;
+	recentImages: GalleryFile[];
+	myImages: GalleryFile[];
+};
+
+let { message, wkey, isLoggedIn, recentImages, myImages }: Props = $props();
 </script>
 
 <div class="prose mx-auto p-4">
@@ -13,11 +22,14 @@ let { data }: PageProps = $props();
 		<br />
 		Tenor等から直接ドラッグアンドドロップでも登録できます
 	</p>
-	{#if data.isLoggedIn && data.wkey}
+	{#if message !== undefined}
+		<ErrorAlert>{message}</ErrorAlert>
+	{/if}
+	{#if isLoggedIn && wkey}
 		<Upload />
 	{:else}
-		<p>作成機能を利用するにはログインしてください</p>
-		<SignInButton redirect="lgtm" />
+		<p>作成機能を利用するにはGitHubでログインしてください</p>
+		<SignInButton provider="github" />
 	{/if}
 </div>
 <div role="tablist" class="tabs tabs-border tabs-xl mb-3">
@@ -31,16 +43,16 @@ let { data }: PageProps = $props();
 	/>
 	<div role="tabpanel" class="tab-content">
 		<Gallery
-			fileNameList={data.recentImages}
-			userKey={data.wkey}
+			fileNameList={recentImages}
+			userKey={wkey}
 			find={false}
 		/>
 	</div>
 
 	<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="自分" />
 	<div role="tabpanel" class="tab-content">
-		{#if data.wkey}
-			<Gallery fileNameList={data.myImages} userKey={data.wkey} find={true} />
+		{#if wkey}
+			<Gallery fileNameList={myImages} userKey={wkey} find={true} />
 		{:else}
 			<p>作成機能を利用するにはログインしてください</p>
 		{/if}

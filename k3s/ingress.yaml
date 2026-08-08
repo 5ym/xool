@@ -11,8 +11,28 @@ spec:
   tls:
     - hosts:
         - x.doany.io
+        - l.doany.io
   rules:
+    # One Deployment answers both names. Which tool a request gets is decided
+    # in the app from the Host header, so the two rules are identical here.
     - host: x.doany.io
+      http:
+        paths:
+          - path: /images
+            pathType: Prefix
+            backend:
+              service:
+                name: xool
+                port:
+                  number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: xool
+                port:
+                  number: 3000
+    - host: l.doany.io
       http:
         paths:
           - path: /images

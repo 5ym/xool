@@ -1,10 +1,9 @@
 import { redirect } from "@sveltejs/kit";
-import { HOST_URL } from "$lib/server/env";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ url, cookies }) => {
 	const redirectUrl = encodeURI(
-		`${HOST_URL}/api/cb?redirect=${url.searchParams.get("redirect") ?? ""}`,
+		`${url.origin}/api/cb?redirect=${url.searchParams.get("redirect") ?? ""}`,
 	);
 	cookies.delete("message", { path: "/" });
 	redirect(

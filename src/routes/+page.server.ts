@@ -1,18 +1,41 @@
 import { autoAction } from "$lib/server/client";
+import db from "$lib/server/db";
+import { get } from "$lib/server/lgtm";
+import type { GhUser } from "$lib/server/model";
 import { getSummary } from "$lib/server/summary";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ cookies }) => {
+export const load: PageServerLoad = async ({ cookies, locals }) => {
 	const wkey = cookies.get("key");
 	const message = cookies.get("message");
 
+	// Two tools, one deployment: the hostname the request arrived on decides
+	// which of them this page is.
+	if (locals.site === "lgtm") {
+		const ghUser = wkey
+			? db()
+					.query<GhUser, [string]>("SELECT * FROM ghUser WHERE key = ?")
+					.get(wkey)
+			: null;
+
+		return {
+			site: "lgtm" as const,
+			message,
+			wkey,
+			isLoggedIn: ghUser !== null,
+			recentImages: get(1, false, wkey),
+			myImages: wkey ? get(1, true, wkey) : [],
+		};
+	}
+
 	if (message !== undefined || wkey === undefined) {
-		return { message, wkey };
+		return { site: "xool" as const, message, wkey };
 	}
 
 	const summary = getSummary(wkey);
 
 	return {
+		site: "xool" as const,
 		message,
 		wkey,
 		summary: {

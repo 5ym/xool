@@ -2,11 +2,15 @@
 import { browser } from "$app/environment";
 import { afterNavigate, beforeNavigate } from "$app/navigation";
 import { updated } from "$app/state";
-import Nav from "$lib/components/Nav.svelte";
 import Toast from "$lib/components/Toast.svelte";
 import "../app.css";
 
-let { children } = $props();
+let { children, data } = $props();
+
+// The two hostnames are two tools. Each one names itself and links nowhere
+// else, so a visitor never sees the other exists.
+const lgtm = $derived(data.site === "lgtm");
+const title = $derived(lgtm ? "LGTM" : "ポスト通信簿");
 
 // A rolling update replaces the hashed asset filenames, so a tab opened before
 // the deploy asks for chunks the new pods no longer have. Without this a click
@@ -41,19 +45,19 @@ if (browser) {
 </script>
 
 <svelte:head>
-	<title>𝕏ool</title>
-	<meta name="description" content="Tool for 𝕏" />
+	<title>{title}</title>
+	<meta
+		name="description"
+		content={lgtm
+			? "LGTM画像を生成できます"
+			: "前日のポストの成績を毎日まとめて自動ポストします"}
+	/>
 </svelte:head>
 
 <nav class="navbar px-0">
 	<div class="page-container flex items-center">
 		<div class="flex-1">
-			<a class="btn btn-ghost text-xl" href="/">𝕏ool</a>
-		</div>
-		<div class="flex-none">
-			<ul class="menu menu-horizontal px-0">
-				<Nav />
-			</ul>
+			<a class="btn btn-ghost text-xl" href="/">{title}</a>
 		</div>
 	</div>
 </nav>
