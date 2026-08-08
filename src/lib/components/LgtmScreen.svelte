@@ -58,6 +58,17 @@ let {
 			<SignInButton />
 		</div>
 	{/if}
+	{#if !ghLogin}
+		<!-- Anyone without a GitHub account attached is on the sign-in that is
+		     going away, so this is exactly the audience that needs to read it. -->
+		<div role="alert" class="alert alert-warning not-prose my-4">
+			<span>
+				𝕏でのログインはいずれ廃止します。引き続き自分の画像を管理したい場合は、<strong
+					>𝕏にログインした状態でGitHubにもログイン</strong
+				>してください。同じアカウントに紐づき、これまでの画像もそのまま残ります。
+			</span>
+		</div>
+	{/if}
 </div>
 <div role="tablist" class="tabs tabs-border tabs-xl mb-3">
 	<input

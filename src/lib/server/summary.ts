@@ -73,6 +73,10 @@ export function summaryText(
 	streak = 0,
 ): string {
 	const [, month, day] = date.split("-");
+	const heading = `${Number(month)}月${Number(day)}日のポスト: ${posts.length}件`;
+	// Reaction lines full of zeroes say nothing about a day nobody posted on.
+	if (posts.length === 0) return [heading, "", "#ポスト通信簿"].join("\n");
+
 	const total = (pick: (post: OwnPost) => number | undefined) =>
 		posts.reduce((sum, post) => sum + (pick(post) ?? 0), 0);
 
@@ -96,7 +100,7 @@ export function summaryText(
 	// A line whose numbers are all zero says nothing, and every one of them
 	// spends part of a post nobody asked to be long.
 	const lines = [
-		`${Number(month)}月${Number(day)}日のポスト: ${posts.length}件${diff}`,
+		`${heading}${diff}`,
 		replies > 0 && `うちリプライ ${replies}件`,
 		`いいね ${n(likes)}・リポスト ${n(reposts)}・返信 ${n(replied)}・ブックマーク ${n(bookmarks)}`,
 		impressions > 0 &&
@@ -113,14 +117,20 @@ function signed(value: number): string {
 	return value > 0 ? `+${value}` : `${value}`;
 }
 
-async function postSummary(row: Summary, date: string) {
+/** Whether a summary actually went out. */
+async function postSummary(
+	row: Summary,
+	date: string,
+	force: boolean,
+): Promise<boolean> {
 	const user = db()
 		.query<User, [string]>("SELECT * FROM user WHERE key = ?")
 		.get(row.userKey);
-	if (user === null) return;
+	if (user === null) return false;
 
 	let lastError: string | null = null;
 	let lastPostId: string | null = row.lastPostId;
+	let posted = false;
 
 	const ret = await autoAction("ownPosts", row.userKey, {
 		id: user.socialId,
@@ -152,10 +162,12 @@ async function postSummary(row: Summary, date: string) {
 			[row.userKey, date, posts.length, impressions],
 		);
 
-		// A day with nothing on it is not worth a post, and x.com charges for
-		// every one of them.
-		if (posts.length > 0) {
-			const posted = await autoAction("tweet", row.userKey, {
+		// A quiet day is normally not worth $0.015 to announce. The run that
+		// switching this on kicks off is the exception: someone who just turned
+		// it on is waiting to see what it does, and "nothing happened" is a poor
+		// answer whether or not it is technically correct.
+		if (posts.length > 0 || force) {
+			const result = await autoAction("tweet", row.userKey, {
 				text: summaryText(
 					date,
 					posts,
@@ -163,12 +175,13 @@ async function postSummary(row: Summary, date: string) {
 					streakEndingOn(row.userKey, date),
 				),
 			});
-			if (posted?.error !== undefined) {
-				lastError = posted.error;
-			} else if (posted?.rateLimit?.httpStatus >= 400) {
-				lastError = `𝕏がポストを拒否しました (${posted.rateLimit.httpStatus})`;
+			if (result?.error !== undefined) {
+				lastError = result.error;
+			} else if (result?.rateLimit?.httpStatus >= 400) {
+				lastError = `𝕏がポストを拒否しました (${result.rateLimit.httpStatus})`;
 			} else {
-				lastPostId = posted?.data?.id ?? null;
+				lastPostId = result?.data?.id ?? null;
+				posted = true;
 			}
 		}
 	}
@@ -179,12 +192,17 @@ async function postSummary(row: Summary, date: string) {
 		"UPDATE summary SET lastSummarizedOn = ?, lastPostId = ?, lastError = ? WHERE userKey = ?",
 		[date, lastPostId, lastError, row.userKey],
 	);
+	return posted;
 }
 
 /**
  * Posts the summary for the day that has just ended to everyone who asked for
- * one and has not had it yet. Safe to call as often as you like: a day already
- * summarised is skipped, so restarts and overlapping ticks do not repost.
+ * one and has not had it yet, and answers with how many went out. Safe to call
+ * as often as you like: a day already summarised is skipped, so restarts and
+ * overlapping ticks do not repost.
+ *
+ * Naming one user is how the toggle asks for its own summary right away, and
+ * that run posts even for an empty day.
  */
 export async function postDueSummaries(userKey?: string, now = Date.now()) {
 	const date = addDays(jstDate(now), -1);
@@ -201,8 +219,9 @@ export async function postDueSummaries(userKey?: string, now = Date.now()) {
 					)
 					.all(userKey, date);
 
+	let posted = 0;
 	for (const row of due) {
-		await postSummary(row, date);
+		if (await postSummary(row, date, userKey !== undefined)) posted++;
 	}
-	return due.length;
+	return posted;
 }

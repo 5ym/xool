@@ -40,7 +40,7 @@ async function toggleSummary(event: Event) {
 				? "自動ポストをOFFにしました"
 				: ret.posted
 					? "前日分を投稿しました"
-					: "ONにしました (前日のポストがないため投稿は次回から)",
+					: "ONにしました (次回の0:00から投稿します)",
 		);
 	} catch (error) {
 		setMessage(

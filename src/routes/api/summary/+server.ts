@@ -15,12 +15,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	setEnabled(userKey, enabled);
 	// Post the first one now rather than at the next midnight, so switching this
 	// on shows you what it does.
-	if (enabled) await postDueSummaries(userKey);
+	const posted = enabled ? await postDueSummaries(userKey) : 0;
 
 	const summary = getSummary(userKey);
 	return json({
 		enabled: summary?.enabled === 1,
-		posted: summary?.lastPostId !== null,
+		posted: posted > 0,
 		error: summary?.lastError ?? undefined,
 	});
 };
