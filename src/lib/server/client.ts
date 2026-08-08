@@ -147,14 +147,18 @@ export type OwnPost = {
 	id: string;
 	text: string;
 	created_at: string;
+	in_reply_to_user_id?: string;
 	public_metrics?: {
 		like_count?: number;
 		retweet_count?: number;
 		reply_count?: number;
 		quote_count?: number;
+		bookmark_count?: number;
 	};
 	non_public_metrics?: {
 		impression_count?: number;
+		user_profile_clicks?: number;
+		url_link_clicks?: number;
 	};
 };
 
@@ -188,7 +192,10 @@ export async function action(
 				// Reposts carry no writing of your own and no impressions worth
 				// counting, so they would only inflate the number.
 				exclude: "retweets",
-				"tweet.fields": "created_at,public_metrics,non_public_metrics",
+				// x.com bills per resource returned, not per field, so every extra
+				// field on the posts we are already paying to read is free.
+				"tweet.fields":
+					"created_at,public_metrics,non_public_metrics,in_reply_to_user_id",
 			});
 			if (payload?.startTime) {
 				searchParams.append("start_time", payload.startTime);

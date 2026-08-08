@@ -1,3 +1,9 @@
+export interface SummaryDay {
+	userKey: string;
+	date: string;
+	posts: number;
+	impressions: number;
+}
 export interface Summary {
 	userKey: string;
 	enabled: number;

@@ -41,6 +41,18 @@ export default function db(): DatabaseType {
 			lastError TEXT
 		)
 	`);
+	// One row per day already summarised. x.com is never asked for any of this
+	// twice, so comparing a day with the one before it, or counting a streak,
+	// costs nothing.
+	instance.run(`
+		CREATE TABLE IF NOT EXISTS summaryDay (
+			userKey TEXT NOT NULL,
+			date TEXT NOT NULL,
+			posts INTEGER NOT NULL,
+			impressions INTEGER NOT NULL,
+			PRIMARY KEY (userKey, date)
+		)
+	`);
 	// The metrics page is gone and so are the tables it filled. This runs on
 	// every boot because there is no migration runner to run it once; both
 	// statements are no-ops on a database that has already seen them.

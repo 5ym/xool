@@ -1,6 +1,6 @@
 import { autoAction, type OwnPost } from "./client";
 import db from "./db";
-import type { Summary, User } from "./model";
+import type { Summary, SummaryDay, User } from "./model";
 
 // Everything here is reckoned in JST: the day a summary covers is the day the
 // person posting it lived through, not the one UTC happened to be on.
@@ -45,25 +45,73 @@ export function setEnabled(userKey: string, enabled: boolean) {
 }
 
 const numberFormat = new Intl.NumberFormat("ja-JP");
+const n = (value: number) => numberFormat.format(value);
 
-export function summaryText(date: string, posts: OwnPost[]): string {
+/** How many days up to and including `date` were posted on, without a gap. */
+function streakEndingOn(userKey: string, date: string): number {
+	const days = db()
+		.query<{ date: string; posts: number }, [string, string]>(
+			"SELECT date, posts FROM summaryDay WHERE userKey = ? AND date <= ? ORDER BY date DESC LIMIT 400",
+		)
+		.all(userKey, date);
+
+	let streak = 0;
+	let expected = date;
+	for (const day of days) {
+		// A missing row is a day this never ran for, which is not evidence of
+		// having posted, so it ends the streak just like an empty day does.
+		if (day.date !== expected || day.posts === 0) break;
+		streak++;
+		expected = addDays(expected, -1);
+	}
+	return streak;
+}
+
+export function summaryText(
+	date: string,
+	posts: OwnPost[],
+	previous?: SummaryDay,
+	streak = 0,
+): string {
 	const [, month, day] = date.split("-");
 	const total = (pick: (post: OwnPost) => number | undefined) =>
 		posts.reduce((sum, post) => sum + (pick(post) ?? 0), 0);
 
+	const replies = posts.filter((post) => post.in_reply_to_user_id).length;
 	const likes = total((post) => post.public_metrics?.like_count);
 	const reposts = total((post) => post.public_metrics?.retweet_count);
-	const impressions = total(
-		(post) => post.non_public_metrics?.impression_count,
+	const replied = total((post) => post.public_metrics?.reply_count);
+	const bookmarks = total((post) => post.public_metrics?.bookmark_count);
+	const impressions = total((p) => p.non_public_metrics?.impression_count);
+	const profileClicks = total((p) => p.non_public_metrics?.user_profile_clicks);
+	const linkClicks = total((p) => p.non_public_metrics?.url_link_clicks);
+	const best = Math.max(
+		0,
+		...posts.map((p) => p.non_public_metrics?.impression_count ?? 0),
 	);
 
-	return [
-		`${Number(month)}月${Number(day)}日のポスト: ${posts.length}件`,
-		`いいね ${numberFormat.format(likes)}・リポスト ${numberFormat.format(reposts)}`,
-		`インプレッション ${numberFormat.format(impressions)}`,
-		"",
-		"#ツイ廃アラート",
-	].join("\n");
+	const diff =
+		previous === undefined
+			? ""
+			: ` (前日比 ${signed(posts.length - previous.posts)})`;
+	// A line whose numbers are all zero says nothing, and every one of them
+	// spends part of a post nobody asked to be long.
+	const lines = [
+		`${Number(month)}月${Number(day)}日のポスト: ${posts.length}件${diff}`,
+		replies > 0 && `うちリプライ ${replies}件`,
+		`いいね ${n(likes)}・リポスト ${n(reposts)}・返信 ${n(replied)}・ブックマーク ${n(bookmarks)}`,
+		impressions > 0 &&
+			`インプレッション ${n(impressions)} (平均 ${n(Math.round(impressions / posts.length))}・最高 ${n(best)})`,
+		profileClicks + linkClicks > 0 &&
+			`プロフィールクリック ${n(profileClicks)}・リンククリック ${n(linkClicks)}`,
+		streak > 1 && `${streak}日連続でポスト中`,
+	].filter((line) => typeof line === "string");
+
+	return [...lines, "", "#ツイ廃アラート"].join("\n");
+}
+
+function signed(value: number): string {
+	return value > 0 ? `+${value}` : `${value}`;
 }
 
 async function postSummary(row: Summary, date: string) {
@@ -91,11 +139,30 @@ async function postSummary(row: Summary, date: string) {
 		// window and would count itself.
 		const all: OwnPost[] = ret?.data ?? [];
 		const posts = all.filter((post) => post.id !== row.lastPostId);
+		const impressions = posts.reduce(
+			(sum, post) => sum + (post.non_public_metrics?.impression_count ?? 0),
+			0,
+		);
+		const previous = db()
+			.query<SummaryDay, [string, string]>(
+				"SELECT * FROM summaryDay WHERE userKey = ? AND date = ?",
+			)
+			.get(row.userKey, addDays(date, -1));
+		db().run(
+			"INSERT OR REPLACE INTO summaryDay (userKey, date, posts, impressions) VALUES (?, ?, ?, ?)",
+			[row.userKey, date, posts.length, impressions],
+		);
+
 		// A day with nothing on it is not worth a post, and x.com charges for
 		// every one of them.
 		if (posts.length > 0) {
 			const posted = await autoAction("tweet", row.userKey, {
-				text: summaryText(date, posts),
+				text: summaryText(
+					date,
+					posts,
+					previous ?? undefined,
+					streakEndingOn(row.userKey, date),
+				),
 			});
 			if (posted?.error !== undefined) {
 				lastError = posted.error;
