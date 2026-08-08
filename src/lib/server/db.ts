@@ -32,8 +32,10 @@ export default function db(): DatabaseType {
 		)
 	`);
 	instance.run("CREATE INDEX IF NOT EXISTS lImage_userKey ON lImage(userKey)");
-	// The tweet and tweetMetric tables the metrics page filled are deliberately
-	// left alone rather than dropped: the snapshots in them cannot be taken
-	// again, and x.com only serves the numbers behind them for 30 days.
+	// The metrics page is gone and so are the tables it filled. This runs on
+	// every boot because there is no migration runner to run it once; both
+	// statements are no-ops on a database that has already seen them.
+	instance.run("DROP TABLE IF EXISTS tweetMetric");
+	instance.run("DROP TABLE IF EXISTS tweet");
 	return instance;
 }

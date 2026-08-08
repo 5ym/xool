@@ -77,6 +77,25 @@ let { data }: PageProps = $props();
 		{/await}
 	{/if}
 	<SignInButton />
+	<h3>運営費について</h3>
+	<p>
+		𝕏はAPIを従量課金にしたため、ポスト1件ごとに費用がかかります。
+		<br />
+		通常のポストが <strong>$0.015</strong>、URLを含むポストが
+		<strong>$0.20</strong> で、これは運営者が負担しています。
+	</p>
+	<p>
+		支えていただける方は
+		<a
+			class="link link-primary"
+			target="_blank"
+			href="https://ko-fi.com/yui5m"
+			rel="noreferrer"
+		>
+			Ko-fi
+		</a>
+		からお願いします。
+	</p>
 	<h3>プライバシー</h3>
 	<p>
 		Webhookを作成するにあたってUser ID, Access Token, Refresh
