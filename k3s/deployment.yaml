@@ -71,9 +71,9 @@ spec:
             # so that nobody can grant it to themselves by signing up. Empty
             # means nobody.
             - name: ADMIN_X_IDS
-              value: ""
+              value: "1021006412715921410"
             - name: ADMIN_GH_LOGINS
-              value: ""
+              value: "5ym"
             # Finish serving in-flight requests before exiting; must stay under
             # terminationGracePeriodSeconds above.
             - name: SHUTDOWN_TIMEOUT

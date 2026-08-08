@@ -111,7 +111,7 @@ async function toggleSummary(event: Event) {
 						<span>ユーザー情報取得APIが上限に達しました</span>
 					</div>
 				{:else}
-					<div class="overflow-x-auto">
+					<div class="overflow-x-auto my-2">
 						<table class="table my-0">
 							<thead>
 								<tr>
@@ -130,9 +130,9 @@ async function toggleSummary(event: Event) {
 						</table>
 					</div>
 				{/if}
-				<h3>
+				<p class="text-sm opacity-60 mt-3">
 					別のアカウントを使用する場合は下記で認証画面内でアカウント選択できます
-				</h3>
+				</p>
 			{/if}
 		{:catch error}
 			<!-- Without this branch Svelte leaves the skeleton above on screen when

@@ -11,6 +11,8 @@ let { data }: PageProps = $props();
 		message={data.message}
 		wkey={data.wkey}
 		isLoggedIn={data.isLoggedIn}
+		ghLogin={data.ghLogin}
+		xLinked={data.xLinked}
 		recentImages={data.recentImages}
 		myImages={data.myImages}
 	/>
