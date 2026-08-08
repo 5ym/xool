@@ -111,8 +111,8 @@ async function toggleSummary(event: Event) {
 						<span>ユーザー情報取得APIが上限に達しました</span>
 					</div>
 				{:else}
-					<div class="overflow-x-auto my-0">
-						<table class="table table-sm my-0">
+					<div class="overflow-x-auto not-prose">
+						<table class="table table-sm">
 							<thead>
 								<tr>
 									<th scope="col">ID</th>
