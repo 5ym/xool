@@ -157,10 +157,12 @@ async function postSummary(
 				"SELECT * FROM summaryDay WHERE userKey = ? AND date = ?",
 			)
 			.get(row.userKey, addDays(date, -1));
-		db().run(
-			"INSERT OR REPLACE INTO summaryDay (userKey, date, posts, impressions) VALUES (?, ?, ?, ?)",
-			[row.userKey, date, posts.length, impressions],
-		);
+		const record = (didPost: boolean) =>
+			db().run(
+				"INSERT OR REPLACE INTO summaryDay (userKey, date, posts, impressions, posted) VALUES (?, ?, ?, ?, ?)",
+				[row.userKey, date, posts.length, impressions, didPost ? 1 : 0],
+			);
+		record(false);
 
 		// A quiet day is normally not worth $0.015 to announce. The run that
 		// switching this on kicks off is the exception: someone who just turned
@@ -182,6 +184,7 @@ async function postSummary(
 			} else {
 				lastPostId = result?.data?.id ?? null;
 				posted = true;
+				record(true);
 			}
 		}
 	}

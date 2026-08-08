@@ -17,6 +17,8 @@ services:
       - HASH=
       - GITHUB_CLIENT_ID=
       - GITHUB_CLIENT_SECRET=
+      - ADMIN_X_IDS=
+      - ADMIN_GH_LOGINS=
     labels:
       - "traefik.http.routers.xool.rule=Host(`x.localhost`) || Host(`l.localhost`)"
       - "traefik.http.routers.xool.tls=true"

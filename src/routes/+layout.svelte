@@ -59,6 +59,11 @@ if (browser) {
 		<div class="flex-1">
 			<a class="btn btn-ghost text-xl" href="/">{title}</a>
 		</div>
+		{#if data.isAdmin}
+			<div class="flex-none">
+				<a class="btn btn-ghost btn-sm" href="/admin">管理</a>
+			</div>
+		{/if}
 	</div>
 </nav>
 <main>

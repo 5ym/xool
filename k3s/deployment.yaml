@@ -67,6 +67,13 @@ spec:
             # The hostname LGTM answers on. Anything else is the summary tool.
             - name: LGTM_HOST
               value: l.doany.io
+            # Who can open /admin. Named here rather than stored in the database
+            # so that nobody can grant it to themselves by signing up. Empty
+            # means nobody.
+            - name: ADMIN_X_IDS
+              value: ""
+            - name: ADMIN_GH_LOGINS
+              value: ""
             # Finish serving in-flight requests before exiting; must stay under
             # terminationGracePeriodSeconds above.
             - name: SHUTDOWN_TIMEOUT

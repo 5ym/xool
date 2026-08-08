@@ -4,6 +4,20 @@ import { dirname } from "node:path";
 
 let instance: DatabaseType | undefined;
 
+/** ALTER TABLE ADD COLUMN, minus the error when it is already there. */
+function addColumn(
+	database: DatabaseType,
+	table: string,
+	column: string,
+	definition: string,
+) {
+	const columns = database
+		.query<{ name: string }, []>(`PRAGMA table_info(${table})`)
+		.all();
+	if (columns.some((existing) => existing.name === column)) return;
+	database.run(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+}
+
 export default function db(): DatabaseType {
 	if (instance) return instance;
 	const { Database } = require("bun:sqlite") as typeof import("bun:sqlite");
@@ -62,6 +76,9 @@ export default function db(): DatabaseType {
 			PRIMARY KEY (userKey, date)
 		)
 	`);
+	// Whether a summary went out for that day, which is what x.com charges the
+	// $0.015 for. Added after the table shipped, so it has to be checked for.
+	addColumn(instance, "summaryDay", "posted", "INTEGER NOT NULL DEFAULT 0");
 	// The metrics page is gone and so are the tables it filled. This runs on
 	// every boot because there is no migration runner to run it once; both
 	// statements are no-ops on a database that has already seen them.
