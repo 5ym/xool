@@ -91,7 +91,7 @@ async function toggleSummary(event: Event) {
 			{#if ret?.error}
 				<ErrorAlert>{ret.error}</ErrorAlert>
 			{:else}
-				<h3>現在のアカウント</h3>
+				<h3 class="mb-2">現在のアカウント</h3>
 				{#if ret?.status === 429}
 					<div role="alert" class="alert alert-warning">
 						<svg
@@ -111,8 +111,8 @@ async function toggleSummary(event: Event) {
 						<span>ユーザー情報取得APIが上限に達しました</span>
 					</div>
 				{:else}
-					<div class="overflow-x-auto my-2">
-						<table class="table my-0">
+					<div class="overflow-x-auto my-0">
+						<table class="table table-sm my-0">
 							<thead>
 								<tr>
 									<th scope="col">ID</th>
@@ -130,7 +130,7 @@ async function toggleSummary(event: Event) {
 						</table>
 					</div>
 				{/if}
-				<p class="text-sm opacity-60 mt-3">
+				<p class="text-sm opacity-60 mt-2">
 					別のアカウントを使用する場合は下記で認証画面内でアカウント選択できます
 				</p>
 			{/if}
