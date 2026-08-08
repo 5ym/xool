@@ -17,10 +17,7 @@ const dateTime = new Intl.DateTimeFormat("ja-JP", {
 
 <div class="page-container p-4">
 	{#if data.site === "xool"}
-		<div class="prose">
-			<h3>ポスト通信簿</h3>
-		</div>
-		<div class="stats stats-vertical sm:stats-horizontal my-4">
+		<div class="stats stats-vertical sm:stats-horizontal mb-4">
 			<div class="stat">
 				<div class="stat-title">ログイン済みユーザー</div>
 				<div class="stat-value">{number.format(data.summary.users)}</div>
@@ -89,10 +86,7 @@ const dateTime = new Intl.DateTimeFormat("ja-JP", {
 			</table>
 		</div>
 	{:else}
-		<div class="prose">
-			<h3>LGTM</h3>
-		</div>
-		<div class="stats stats-vertical sm:stats-horizontal my-4">
+		<div class="stats stats-vertical sm:stats-horizontal mb-4">
 			<div class="stat">
 				<div class="stat-title">画像</div>
 				<div class="stat-value">{number.format(data.lgtm.images)}</div>
