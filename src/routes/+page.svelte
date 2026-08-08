@@ -1,16 +1,68 @@
 <script lang="ts">
+import { invalidateAll } from "$app/navigation";
 import ErrorAlert from "$lib/components/ErrorAlert.svelte";
 import SignInButton from "$lib/components/SignInButton.svelte";
+import { setMessage } from "$lib/stores/toast.svelte";
 import type { PageProps } from "./$types";
 
 let { data }: PageProps = $props();
+
+let saving = $state(false);
+
+async function toggleSummary(event: Event) {
+	const enabled = (event.currentTarget as HTMLInputElement).checked;
+	try {
+		saving = true;
+		const res = await fetch("/api/summary", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ enabled }),
+		});
+		const ret = await res.json();
+		if (!res.ok || ret.error)
+			throw new Error(ret.error ?? "設定を保存できませんでした");
+		setMessage(
+			enabled ? "自動ポストをONにしました" : "自動ポストをOFFにしました",
+		);
+	} catch (error) {
+		setMessage(
+			error instanceof Error ? error.message : "設定を保存できませんでした",
+		);
+	} finally {
+		await invalidateAll();
+		saving = false;
+	}
+}
 </script>
 
 <div class="mx-auto p-4 prose">
-	<p>𝕏まわりの小さな道具をまとめたウェブアプリケーションです</p>
+	<p>
+		前日のポストを毎日0:00にまとめて自動ポストする、ツイ廃アラートです
+	</p>
 	{#if data.message !== undefined}
 		<ErrorAlert>{data.message}</ErrorAlert>
 	{:else if data.wkey !== undefined && data.keyInfo}
+		<h3>1日1回のサマリー</h3>
+		<label class="flex items-center gap-3 not-prose">
+			<input
+				type="checkbox"
+				class="toggle toggle-primary"
+				checked={data.summary?.enabled}
+				disabled={saving}
+				onchange={toggleSummary}
+			/>
+			<span>毎日 0:00 (JST) に前日のポストをまとめて自動ポストする</span>
+		</label>
+		<p class="text-sm opacity-60">
+			ポストが1件もなかった日は投稿しません。リポストは数に含めません。
+			{#if data.summary?.lastSummarizedOn}
+				<br />
+				最終処理: {data.summary.lastSummarizedOn} 分
+			{/if}
+		</p>
+		{#if data.summary?.lastError}
+			<ErrorAlert>前回の自動ポスト: {data.summary.lastError}</ErrorAlert>
+		{/if}
 		{#await data.keyInfo}
 			<div class="skeleton h-8 w-full mt-8 mb-3"></div>
 			<div class="skeleton h-24 w-full mt-7 mb-7"></div>
@@ -76,8 +128,8 @@ let { data }: PageProps = $props();
 	<p>
 		𝕏はAPIを従量課金にしたため、ポスト1件ごとに費用がかかります。
 		<br />
-		通常のポストが <strong>$0.015</strong>、URLを含むポストが
-		<strong>$0.20</strong> で、これは運営者が負担しています。
+		サマリーの自動ポストは1日1件で <strong>$0.015</strong>、集計のための読み取りが
+		1ポストあたり <strong>$0.001</strong> で、これは運営者が負担しています。
 	</p>
 	<p>
 		支えていただける方は

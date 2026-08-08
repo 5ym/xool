@@ -102,6 +102,9 @@ export async function refreshToken(refreshToken: string) {
 
 export type ActionPayload = {
 	text?: string;
+	id?: string;
+	startTime?: string;
+	endTime?: string;
 };
 
 export async function autoAction(
@@ -140,6 +143,21 @@ type ReturnType<T> = {
 	rateLimit?: RateLimit;
 };
 
+export type OwnPost = {
+	id: string;
+	text: string;
+	created_at: string;
+	public_metrics?: {
+		like_count?: number;
+		retweet_count?: number;
+		reply_count?: number;
+		quote_count?: number;
+	};
+	non_public_metrics?: {
+		impression_count?: number;
+	};
+};
+
 export async function action(
 	type: string,
 	accessToken: string,
@@ -164,6 +182,27 @@ export async function action(
 				JSON.stringify({ text: payload?.text }),
 				accessToken,
 			);
+		case "ownPosts": {
+			const searchParams = new URLSearchParams({
+				max_results: "100",
+				// Reposts carry no writing of your own and no impressions worth
+				// counting, so they would only inflate the number.
+				exclude: "retweets",
+				"tweet.fields": "created_at,public_metrics,non_public_metrics",
+			});
+			if (payload?.startTime) {
+				searchParams.append("start_time", payload.startTime);
+			}
+			if (payload?.endTime) {
+				searchParams.append("end_time", payload.endTime);
+			}
+			return (await client(
+				"GET",
+				`users/${payload?.id}/tweets?${searchParams.toString()}`,
+				null,
+				accessToken,
+			)) as ReturnType<OwnPost[]>;
+		}
 	}
 
 	return {

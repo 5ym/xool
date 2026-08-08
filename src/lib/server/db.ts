@@ -32,6 +32,15 @@ export default function db(): DatabaseType {
 		)
 	`);
 	instance.run("CREATE INDEX IF NOT EXISTS lImage_userKey ON lImage(userKey)");
+	instance.run(`
+		CREATE TABLE IF NOT EXISTS summary (
+			userKey TEXT PRIMARY KEY,
+			enabled INTEGER NOT NULL,
+			lastSummarizedOn TEXT,
+			lastPostId TEXT,
+			lastError TEXT
+		)
+	`);
 	// The metrics page is gone and so are the tables it filled. This runs on
 	// every boot because there is no migration runner to run it once; both
 	// statements are no-ops on a database that has already seen them.
