@@ -107,7 +107,7 @@ export function summaryText(
 		streak > 1 && `${streak}日連続でポスト中`,
 	].filter((line) => typeof line === "string");
 
-	return [...lines, "", "#ツイ廃アラート"].join("\n");
+	return [...lines, "", "#ポスト通信簿"].join("\n");
 }
 
 function signed(value: number): string {

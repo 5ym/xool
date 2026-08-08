@@ -37,12 +37,12 @@ async function toggleSummary(event: Event) {
 
 <div class="mx-auto p-4 prose">
 	<p>
-		前日のポストを毎日0:00にまとめて自動ポストする、ツイ廃アラートです
+		前日のポストの成績を毎日0:00にまとめて自動ポストする、ポスト通信簿です
 	</p>
 	{#if data.message !== undefined}
 		<ErrorAlert>{data.message}</ErrorAlert>
 	{:else if data.wkey !== undefined && data.keyInfo}
-		<h3>1日1回のサマリー</h3>
+		<h3>ポスト通信簿</h3>
 		<label class="flex items-center gap-3 not-prose">
 			<input
 				type="checkbox"
