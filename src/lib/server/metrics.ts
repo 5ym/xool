@@ -141,7 +141,7 @@ export function lastCapturedAt(userKey: string): number | undefined {
 export async function captureIfStale(key: string) {
 	const last = lastCapturedAt(key);
 	if (last !== undefined && Date.now() - last < CAPTURE_INTERVAL_MS) return;
-	await capture(key);
+	return await capture(key);
 }
 
 export function history(userKey: string, limit = 20): TweetHistory[] {

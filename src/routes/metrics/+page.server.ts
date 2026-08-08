@@ -14,17 +14,26 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	}
 
 	// A failed snapshot still leaves everything recorded so far worth showing.
-	let captureFailed = false;
+	// x.com's refusals come back in the result rather than as a throw, so
+	// watching only for exceptions here read a rejected snapshot as a fine one.
+	let captureError: string | undefined;
 	try {
-		await captureIfStale(wkey);
-	} catch {
-		captureFailed = true;
+		const ret = await captureIfStale(wkey);
+		if (ret && "error" in ret) {
+			captureError = ret.error;
+		} else if (ret?.rateLimit?.httpStatus === 429) {
+			captureError =
+				"𝕏の取得上限に達しました。しばらく待ってから開き直してください";
+		}
+	} catch (error) {
+		captureError =
+			error instanceof Error ? error.message : "数値の取得に失敗しました";
 	}
 
 	return {
 		isLoggedIn: true,
 		wkey,
-		captureFailed,
+		captureError,
 		capturedAt: lastCapturedAt(wkey),
 		tweets: history(wkey),
 	};

@@ -25,10 +25,20 @@ async function capture() {
 			body: JSON.stringify({ key: data.wkey }),
 		});
 		const ret = await res.json();
-		if (!res.ok || ret.error) throw new Error(ret.error ?? "capture failed");
+		// Say what went wrong. "記録に失敗しました" covered a dead token, a
+		// throttled account and a bug alike, and none of them told you whether
+		// waiting or signing in again was the answer.
+		if (!res.ok || ret.error) {
+			throw new Error(
+				ret.error ??
+					(res.status === 429
+						? "𝕏の取得上限に達しました。しばらく待ってから試してください"
+						: `記録に失敗しました (${res.status})`),
+			);
+		}
 		setMessage(`${ret.posts}件のポストを記録しました`);
-	} catch {
-		setMessage("記録に失敗しました");
+	} catch (error) {
+		setMessage(error instanceof Error ? error.message : "記録に失敗しました");
 	} finally {
 		await invalidateAll();
 		isCapturing = false;
@@ -53,8 +63,8 @@ async function capture() {
 		</div>
 		<SignInButton redirect="metrics" />
 	{:else}
-		{#if data.captureFailed}
-			<ErrorAlert>数値の取得に失敗しました</ErrorAlert>
+		{#if data.captureError}
+			<ErrorAlert>{data.captureError}</ErrorAlert>
 		{/if}
 
 		<div class="flex items-center gap-3 my-6">
