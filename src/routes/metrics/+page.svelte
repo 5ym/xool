@@ -4,6 +4,7 @@ import ErrorAlert from "$lib/components/ErrorAlert.svelte";
 import SignInButton from "$lib/components/SignInButton.svelte";
 import Sparkline from "$lib/components/Sparkline.svelte";
 import { setMessage } from "$lib/stores/toast.svelte";
+import { xStatusMessage } from "$lib/xStatus";
 import type { PageProps } from "./$types";
 
 let { data }: PageProps = $props();
@@ -26,15 +27,10 @@ async function capture() {
 		});
 		const ret = await res.json();
 		// Say what went wrong. "記録に失敗しました" covered a dead token, a
-		// throttled account and a bug alike, and none of them told you whether
-		// waiting or signing in again was the answer.
+		// throttled account and a lapsed API plan alike, and none of them told
+		// you whether waiting or signing in again was the answer.
 		if (!res.ok || ret.error) {
-			throw new Error(
-				ret.error ??
-					(res.status === 429
-						? "𝕏の取得上限に達しました。しばらく待ってから試してください"
-						: `記録に失敗しました (${res.status})`),
-			);
+			throw new Error(ret.error ?? xStatusMessage(res.status));
 		}
 		setMessage(`${ret.posts}件のポストを記録しました`);
 	} catch (error) {

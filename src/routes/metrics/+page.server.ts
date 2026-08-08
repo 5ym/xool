@@ -1,6 +1,7 @@
 import db from "$lib/server/db";
 import { captureIfStale, history, lastCapturedAt } from "$lib/server/metrics";
 import type { User } from "$lib/server/model";
+import { xStatusMessage } from "$lib/xStatus";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ cookies }) => {
@@ -21,9 +22,8 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		const ret = await captureIfStale(wkey);
 		if (ret && "error" in ret) {
 			captureError = ret.error;
-		} else if (ret?.rateLimit?.httpStatus === 429) {
-			captureError =
-				"𝕏の取得上限に達しました。しばらく待ってから開き直してください";
+		} else if (ret?.rateLimit && ret.rateLimit.httpStatus >= 400) {
+			captureError = xStatusMessage(ret.rateLimit.httpStatus);
 		}
 	} catch (error) {
 		captureError =
